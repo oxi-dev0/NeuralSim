@@ -30,3 +30,13 @@
 *.exe
 *.out
 *.app
+
+# VS Files
+*.sln
+*.vcxproj
+*.vcxproj.filters
+*.vcxproj.user
+.vs/
+
+# Intermediate files
+bin-int/

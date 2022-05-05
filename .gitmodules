@@ -1,3 +1,6 @@
 [submodule "vendor/SFML"]
 	path = vendor/SFML
 	url = https://github.com/oxi-dev0/SFML
+[submodule "vendor/spdlog"]
+	path = vendor/spdlog
+	url = https://github.com/oxi-dev0/spdlog

@@ -25,7 +25,8 @@ project "BioSim"
 
 	includedirs
 	{
-		"vendor/SFML/include/"
+		"vendor/SFML/include/",
+		"vendor/spdlog/include"
 	}
 
 	libdirs { "vendor/SFML/extlibs/libs-msvc-universal/x64", "vendor/SFML/lib" }

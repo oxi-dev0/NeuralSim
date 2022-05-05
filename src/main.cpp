@@ -1,12 +1,33 @@
 #include <iostream>
 #include <SFML/Graphics.hpp>
+#include "Tools/Log.h"
+#include "Tools/Timer.h"
+
+// ---- CONFIG ----
+int sizeX = 128;
+int sizeY = 128;
+int tileSize = 6;
+
+void Render(sf::RenderWindow& window) {
+    window.clear();
+    
+    window.display();
+}
 
 int main()
 {
-    std::cout << "Hello World!\n";
-    sf::RenderWindow window(sf::VideoMode(200, 200), "SFML works!");
-    sf::CircleShape shape(100.f);
-    shape.setFillColor(sf::Color::Green);
+
+#ifdef DIST
+    FreeConsole();
+#else
+    Debug::Log::Init();
+#endif
+
+    LOG_TRACE("Started Engine.");
+
+    Debug::Timer wtmr;
+    sf::RenderWindow window(sf::VideoMode(sizeX*tileSize, sizeY*tileSize), "BioSim C++");
+    LOG_TRACE("Initialised window in {0}s", wtmr.Elapsed());
 
     while (window.isOpen())
     {
@@ -16,10 +37,8 @@ int main()
             if (event.type == sf::Event::Closed)
                 window.close();
         }
-
-        window.clear();
-        window.draw(shape);
-        window.display();
+        
+        Render(window);
     }
 
     return 0;

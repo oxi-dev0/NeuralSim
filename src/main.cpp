@@ -14,14 +14,13 @@ int tileSize = 6;
 
 void RenderGeneration() {
     sf::RenderTexture texture;
-    if (!texture.create(Globals::GlobalConfig.sizeX, Globals::GlobalConfig.sizeY))
+    if (!texture.create(Globals::GlobalConfig.sizeX * tileSize, Globals::GlobalConfig.sizeY * tileSize))
     {
         LOG_ERROR("Could not render the current generation");
     }
     texture.clear();
 
-    sf::CircleShape shape(6);
-    sf::Vector2 vec2 = sf::Vector2((float)Globals::RandRange(0, Globals::GlobalConfig.sizeX), (float)Globals::RandRange(0, Globals::GlobalConfig.sizeY));
+    sf::CircleShape shape(tileSize/2);
     shape.setPosition(vec2);
     texture.draw(shape);
     

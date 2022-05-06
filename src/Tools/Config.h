@@ -1,6 +1,4 @@
 #pragma once
-#ifndef CONFIG
-#define CONFIG
 
 #include <vector>
 #include <tuple>
@@ -26,5 +24,3 @@ namespace Tools {
 
 	inline Config InitConfig;
 }
-
-#endif

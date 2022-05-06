@@ -1,6 +1,4 @@
 #pragma once
-#ifndef VECTOR2D
-#define VECTOR2D
 
 class Vector2D
 {
@@ -16,5 +14,3 @@ public:
 	Vector2D operator/(Vector2D const& v2) { return Vector2D(x / v2.x, y / v2.y); }
 	Vector2D operator*(Vector2D const& v2) { return Vector2D(x * v2.x, y * v2.y); }
 };
-
-#endif

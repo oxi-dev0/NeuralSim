@@ -1,6 +1,4 @@
 #pragma once
-#ifndef GRID
-#define GRID
 
 #include <vector>
 #include "Cell.h"
@@ -57,5 +55,3 @@ private:
 	std::vector<Vector2D> barrierLocations;
 	std::vector<Vector2D> barrierCenters;
 };
-
-#endif-

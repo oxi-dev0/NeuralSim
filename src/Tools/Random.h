@@ -1,6 +1,4 @@
 #pragma once
-#ifndef RANDOM
-#define RANDOM
 
 #include <cstdint>
 #include <cassert>
@@ -21,5 +19,3 @@ namespace Random {
         unsigned operator()(unsigned min, unsigned max);
     };
 }
-
-#endif

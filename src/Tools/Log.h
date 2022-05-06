@@ -27,9 +27,7 @@ namespace Debug {
 
 // Strip trace and info from release build
 #ifdef RELEASE
-	#undef LOG_INFO
 	#undef LOG_TRACE
-	#define LOG_INFO
 	#define LOG_TRACE
 #endif
 

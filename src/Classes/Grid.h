@@ -1,8 +1,11 @@
 #pragma once
+#ifndef GRID
+#define GRID
 
 #include <vector>
 #include "Cell.h"
 #include "Vector2D.h"
+#include "Globals.h"
 
 const uint16_t EMPTY = 0; // Index value 0 is reserved
 const uint16_t BARRIER = 0xffff;
@@ -55,3 +58,4 @@ private:
 	std::vector<Vector2D> barrierCenters;
 };
 
+#endif-

@@ -1,21 +1,54 @@
 #include <iostream>
+
 #include <SFML/Graphics.hpp>
+
 #include "Tools/Log.h"
 #include "Tools/Timer.h"
+#include "Tools/Config.h"
+#include "Tools/Random.h"
+
+#include "Classes/Globals.h"
 
 // ---- CONFIG ----
-int sizeX = 128;
-int sizeY = 128;
 int tileSize = 6;
 
-void Render(sf::RenderWindow& window) {
-    window.clear();
+void RenderGeneration() {
+    sf::RenderTexture texture;
+    if (!texture.create(Globals::GlobalConfig.sizeX, Globals::GlobalConfig.sizeY))
+    {
+        LOG_ERROR("Could not render the current generation");
+    }
+    texture.clear();
+
+    sf::CircleShape shape(6);
+    sf::Vector2 vec2 = sf::Vector2((float)Globals::RandRange(0, Globals::GlobalConfig.sizeX), (float)Globals::RandRange(0, Globals::GlobalConfig.sizeY));
+    shape.setPosition(vec2);
+    texture.draw(shape);
     
-    window.display();
+    texture.display();
+
+    if (!texture.getTexture().copyToImage().saveToFile("render.png")) {
+        LOG_ERROR("Failed to save the render to 'render.png'");
+    }
 }
 
-int main()
+void usage(char* progName)
 {
+    std::cout << progName << " [options]" << std::endl <<
+        "Options:" << std::endl <<
+        "-h | --help                   Print this help" << std::endl <<
+        "-x | --sizeX       [int]      Specify the grid X size" << std::endl <<
+        "-y | --sizeY       [int]      Specify the grid Y size" << std::endl <<
+        "-p | --population  [int]      Specify the population size per generation" << std::endl;
+}
+
+int main(int argc, char** argv)
+{
+    std::string arg(argv[1]);
+    if (arg == "--help" || arg == "-h") {
+        usage(argv[0]);
+        return 0;
+    }
 
 #ifdef DIST
     FreeConsole();
@@ -23,23 +56,16 @@ int main()
     Debug::Log::Init();
 #endif
 
-    LOG_TRACE("Started Engine.");
+    LOG_INFO("Started Engine");
 
-    Debug::Timer wtmr;
-    sf::RenderWindow window(sf::VideoMode(sizeX*tileSize, sizeY*tileSize), "BioSim C++");
-    LOG_TRACE("Initialised window in {0}s", wtmr.Elapsed());
+    Debug::Timer atmr;
+    Tools::Config::InitFromArgv(argc, argv);
+    Globals::Init();
+    LOG_INFO("Parsed console arguments in {0}s", atmr.Elapsed());
 
-    while (window.isOpen())
-    {
-        sf::Event event;
-        while (window.pollEvent(event))
-        {
-            if (event.type == sf::Event::Closed)
-                window.close();
-        }
-        
-        Render(window);
-    }
+    Debug::Timer rtmr;
+    RenderGeneration();
+    LOG_INFO("Rendered test image in {0}s", atmr.Elapsed());
 
     return 0;
 }

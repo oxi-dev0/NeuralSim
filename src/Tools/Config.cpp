@@ -14,7 +14,8 @@ namespace Tools {
 		std::unordered_map<std::string, std::string> shortMap = {
 			{ "x", "sizeX"},
 			{ "y", "sizeY" },
-			{ "p", "population" }
+			{ "p", "population" },
+			{ "fr", "framerate" }
 		};
 
 		std::vector<std::tuple<char*, char*>> pairs;
@@ -80,6 +81,7 @@ namespace Tools {
 			if (key == "sizeX") { newConfig.sizeX = std::stoi(val); }
 			if (key == "sizeY") { newConfig.sizeY = std::stoi(val); }
 			if (key == "population") { newConfig.population = std::stoi(val); }
+			if (key == "framerate") { newConfig.framerate = std::stoi(val); }
 
 			i++;
 		}

@@ -1,10 +1,9 @@
 #pragma once
 
-#include "../Tools/Random.h"
-#include "../Tools/Config.h"
+#include "Grid.h"
 
 namespace Globals {
-	extern Random::RandomGenerator RandRange;
-	extern Tools::Config GlobalConfig;
+	extern Grid GlobalGrid;
 	extern void Init();
 }
+

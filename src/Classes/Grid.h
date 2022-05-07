@@ -3,7 +3,8 @@
 #include <vector>
 #include "Cell.h"
 #include "Vector2D.h"
-#include "Globals.h"
+
+#include "Utils.h"
 
 const uint16_t EMPTY = 0; // Index value 0 is reserved
 const uint16_t BARRIER = 0xffff;
@@ -39,8 +40,10 @@ public:
 	bool isOccupiedAt(Vector2D loc) const { return at(loc) != EMPTY && at(loc) != BARRIER; }
 	bool isBorder(Vector2D loc) const { return loc.x == 0 || loc.x == sizeX() - 1 || loc.y == 0 || loc.y == sizeY() - 1; }
 
-	void set(Vector2D loc, uint16_t val) { columns[loc.x][loc.y] = val; }
-	void set(uint16_t x, uint16_t y, uint16_t val) { columns[x][y] = val; }
+	void set(Vector2D loc, uint16_t val) { if (loc.x < sizeX() && loc.y < sizeY()) { columns[loc.x][loc.y] = val; } }
+	void set(uint16_t x, uint16_t y, uint16_t val) { if (x < sizeX() && y < sizeY()) { columns[x][y] = val; } }
+
+	void NewCell(Cell cell) { uint16_t i = cells.size(); cells.push_back(cell); set(cell.pos, i); }
 
 	Vector2D findEmptyLocation() const;
 	void createBarrier(unsigned barrierType);

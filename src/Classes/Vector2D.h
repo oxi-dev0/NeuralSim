@@ -1,5 +1,7 @@
 #pragma once
 
+#include <stdint.h>
+
 class Vector2D
 {
 public:
@@ -13,4 +15,7 @@ public:
 	Vector2D operator-(Vector2D const& v2) { return Vector2D(x - v2.x, y - v2.y); }
 	Vector2D operator/(Vector2D const& v2) { return Vector2D(x / v2.x, y / v2.y); }
 	Vector2D operator*(Vector2D const& v2) { return Vector2D(x * v2.x, y * v2.y); }
+
+	Vector2D operator*(int const& i) { return Vector2D(x * i, y * i); }
+	Vector2D operator*(float const& f) { return Vector2D(x * f, y * f); }
 };

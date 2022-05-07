@@ -17,6 +17,12 @@ project "BioSim"
 	targetdir ("bin/" .. outputdir)
 	objdir ("bin-int/" .. outputdir)
 
+	debugargs "-x 128 -y 128 -p 1000"
+
+	postbuildcommands {
+	  "{COPY} vendor/ffmpeg/ffmpeg.exe %{cfg.targetdir}"
+	}
+
 	files 
 	{
 		"src/**.h",

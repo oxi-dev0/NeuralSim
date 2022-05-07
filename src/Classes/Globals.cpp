@@ -1,10 +1,9 @@
 #include "Globals.h"
 
 namespace Globals {
-	Random::RandomGenerator RandRange;
-	Tools::Config GlobalConfig;
+	Grid GlobalGrid;
 	void Init() {
-		RandRange = Random::RandomGenerator();
-		GlobalConfig = Tools::InitConfig;
+		GlobalGrid = Grid();
+		GlobalGrid.Init(Utils::GlobalConfig.sizeX, Utils::GlobalConfig.sizeY);
 	}
 }

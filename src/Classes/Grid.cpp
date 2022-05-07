@@ -10,8 +10,8 @@ Vector2D Grid::findEmptyLocation() const {
     Vector2D loc;
 
     while (true) {
-        loc.x = Globals::RandRange(0, Globals::GlobalConfig.sizeX - 1);
-        loc.y = Globals::RandRange(0, Globals::GlobalConfig.sizeY - 1);
+        loc.x = Utils::RandRange(0, Utils::GlobalConfig.sizeX - 1);
+        loc.y = Utils::RandRange(0, Utils::GlobalConfig.sizeY - 1);
         if (isEmptyAt(loc)) {
             break;
         }

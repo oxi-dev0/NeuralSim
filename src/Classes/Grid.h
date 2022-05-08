@@ -1,18 +1,19 @@
 #pragma once
 
 #include <vector>
-#include "Cell.h"
 #include "Vector2D.h"
+#include "Cell.h"
 
 #include "Utils.h"
 
-const uint16_t EMPTY = 0; // Index value 0 is reserved
+const uint16_t EMPTY = 0; // Index value -1 is reserved
 const uint16_t BARRIER = 0xffff;
+
 
 class Grid
 {
 public:
-	std::vector<Cell> cells;
+	std::vector<Cell*> cells = std::vector<Cell*>({ nullptr });
 
 public:
 	struct Column {
@@ -43,7 +44,8 @@ public:
 	void set(Vector2D loc, uint16_t val) { if (loc.x < sizeX() && loc.y < sizeY()) { columns[loc.x][loc.y] = val; } }
 	void set(uint16_t x, uint16_t y, uint16_t val) { if (x < sizeX() && y < sizeY()) { columns[x][y] = val; } }
 
-	void NewCell(Cell cell) { uint16_t i = cells.size(); cells.push_back(cell); set(cell.pos, i); }
+	void NewCell(Cell* cell) { uint16_t i = cells.size(); cells.push_back(cell); set(cell->pos, i); cell->id = i; }
+	void MoveCell(Vector2D oldPos, Vector2D offset);
 
 	Vector2D findEmptyLocation() const;
 	void createBarrier(unsigned barrierType);
@@ -53,7 +55,7 @@ public:
 	Column& operator[](uint16_t columnXNum) { return columns[columnXNum]; }
 	const Column& operator[](uint16_t columnXNum) const { return columns[columnXNum]; }
 
-private:
+public:
 	std::vector<Column> columns;
 	std::vector<Vector2D> barrierLocations;
 	std::vector<Vector2D> barrierCenters;

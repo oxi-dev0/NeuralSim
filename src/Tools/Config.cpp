@@ -15,7 +15,9 @@ namespace Tools {
 			{ "x", "sizeX"},
 			{ "y", "sizeY" },
 			{ "p", "population" },
-			{ "fr", "framerate" }
+			{ "fr", "framerate" },
+			{ "in", "internalneurons"},
+			{ "spg", "stepspergen"}
 		};
 
 		std::vector<std::tuple<char*, char*>> pairs;
@@ -82,6 +84,8 @@ namespace Tools {
 			if (key == "sizeY") { newConfig.sizeY = std::stoi(val); }
 			if (key == "population") { newConfig.population = std::stoi(val); }
 			if (key == "framerate") { newConfig.framerate = std::stoi(val); }
+			if (key == "internalneurons") { newConfig.internalNeuronCount = std::stoi(val); }
+			if (key == "stepspergen") { newConfig.stepsPerGen = std::stoi(val); }
 
 			i++;
 		}

@@ -18,3 +18,17 @@ Vector2D Grid::findEmptyLocation() const {
     }
     return loc;
 }
+
+void Grid::MoveCell(Vector2D oldPos, Vector2D offset) {
+    uint16_t id = at(oldPos);
+    Cell* cell = cells[id];
+    cell->pos = cell->pos + offset;
+    if (cell->pos.x >= columns.size() || cell->pos.y >= columns[0].Size()) {
+        set(cell->pos - offset, 0);
+        delete cell;
+    }
+    else {
+        set(cell->pos - offset, 0);
+        set(cell->pos, id);
+    }
+}

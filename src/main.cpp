@@ -17,6 +17,7 @@
 
 #include "Classes/Utils.h"
 #include "Classes/Globals.h"
+#include "Classes/Generation.h"
 
 #define _SILENCE_ALL_CXX17_DEPRECATION_WARNINGS
 #define _SILENCE_CXX17_CODECVT_HEADER_DEPRECATION_WARNING
@@ -31,7 +32,7 @@ void RenderFrame(sf::RenderTexture& texture, uint16_t gen, int frame) {
 
     for (int c = 0; c < Globals::GlobalGrid.cells.size(); c++) {
         sf::CircleShape shape(tileSize / 2);
-        Vector2D pos = Globals::GlobalGrid.cells[c].pos * Utils::GlobalConfig.tileSize;
+        Vector2D pos = Globals::GlobalGrid.cells[c]->pos * Utils::GlobalConfig.tileSize;
         shape.setPosition(sf::Vector2f(pos.x, pos.y));
         texture.draw(shape);
     }
@@ -60,7 +61,8 @@ void RenderFrame(sf::RenderTexture& texture, uint16_t gen, int frame) {
 }
 
 void TestUpdate() {
-    for (Cell& cell : Globals::GlobalGrid.cells) {
+    for (Cell* cellP : Globals::GlobalGrid.cells) {
+        Cell cell = *cellP;
         if (cell.pos.x < Utils::GlobalConfig.sizeX && cell.pos.y < Utils::GlobalConfig.sizeY) {
             cell.pos = cell.pos + Vector2D(1, 0);
             uint16_t id = Globals::GlobalGrid.at(cell.pos - Vector2D(1, 0));
@@ -109,11 +111,13 @@ void usage(char* progName)
 {
     std::cout << progName << " [options]" << std::endl <<
         "Options:" << std::endl <<
-        "-h  | --help                   Print this help" << std::endl <<
-        "-x  | --sizeX       [int]      Specify the grid X size" << std::endl <<
-        "-y  | --sizeY       [int]      Specify the grid Y size" << std::endl <<
-        "-p  | --population  [int]      Specify the population size per generation" << std::endl <<
-        "-fr | --framerate   [int]      The framerate of rendered generations" << std::endl;
+        "-h   | --help                          Print this help" << std::endl <<
+        "-x   | --sizeX              [int]      Specify the grid X size" << std::endl <<
+        "-y   | --sizeY              [int]      Specify the grid Y size" << std::endl <<
+        "-p   | --population         [int]      Specify the population size per generation" << std::endl <<
+        "-in  | --internalneurons    [int]      The number of internal neurons each cell has" << std::endl <<
+        "-fr  | --framerate          [int]      The framerate of rendered generations" << std::endl <<
+        "-spg | --stepspergen        [int]      The number of simulator steps per generation" << std::endl;
 }
 
 int main(int argc, char** argv)
@@ -140,19 +144,30 @@ int main(int argc, char** argv)
 
     LOG_INFO("Initialised Arguments, Utils and Globals in {0}s", inittmr.Elapsed());
 
+    Debug::Timer debugtmr;
     // debug initialise grid
     for (int i = 0; i < Utils::GlobalConfig.population; i++) {
         bool valid = false;
         while (!valid) {
             Vector2D pos = Vector2D(Utils::RandRange(0, Utils::GlobalConfig.sizeX - 1), Utils::RandRange(0, Utils::GlobalConfig.sizeY - 1));
-            Cell newCell = Cell();
-            newCell.pos = pos;
+            Cell newCell = Cell(pos);
             if (Globals::GlobalGrid.isEmptyAt(pos)) {
                 valid = true;
-                Globals::GlobalGrid.NewCell(newCell);
+                Globals::GlobalGrid.NewCell(&newCell);
+                // map needs cell id
+                newCell.InitaliseMap();
+
+                NeuralNet::Genome TESTGENOME({ NeuralNet::Gene(1,5,1) }); // 1 connection genome should make it so cells move right if over halfway line
+
+                // create neural map
+                newCell.InitialiseGenome(TESTGENOME);
+            }
+            else {
+                uint16_t val = Globals::GlobalGrid.columns[pos.x][pos.y];
             }
         }
     }
+    LOG_INFO("Spawned generation in {0}", debugtmr.Elapsed());
 
     sf::RenderTexture texture;
     if (!texture.create(Utils::GlobalConfig.sizeX * tileSize, Utils::GlobalConfig.sizeY * tileSize))
@@ -162,10 +177,10 @@ int main(int argc, char** argv)
     else {
         int f = 0;
         for (int f = 0; f < 20; f++) {
-            RenderFrame(texture, 0, f);
-            TestUpdate();
+            SimulationStep();
+            RenderFrame(texture, Utils::GlobalSimData.currentGen, Utils::GlobalSimData.currentStep);
         }
-        ProduceVideo(0, Utils::GlobalConfig.framerate);
+        ProduceVideo(Utils::GlobalSimData.currentGen, Utils::GlobalConfig.framerate);
     }
 
     return 0;

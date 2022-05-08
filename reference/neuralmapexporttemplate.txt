@@ -1,0 +1,25 @@
+0-r:Lx
+1-r:Ly
+2-r:AGE
+3-r:OSC
+4-r:RND
+5-i{0@-2495}
+6-i{6@32556}{5@3455}{1@34567}
+7-e:Mx{0@2345}{5@-35056}
+8-e:My{6@2345}
+9-e:Mfb
+10-e:Mlr
+11-e:Mrn{0@230}
+12-e:McN
+13-e:McE
+14-e:McS
+15-e:McW
+
+--Explanation--
+[index]-[type]:[name?][connections?] //? = optional
+
+type: r=receptor, i=internal, e=effector
+
+only r and e have name. I uses "{index - len(receptors)}"
+
+connection: {id@weightInt}

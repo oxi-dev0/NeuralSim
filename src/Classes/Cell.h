@@ -9,13 +9,16 @@ class Cell
 {
 public:
 	Vector2D pos; // Pos in grid[][]
-	Vector2D dir;
+	Dir dir;
 	int id;
+	int oscPeriod;
+	bool dead;
+	NeuralNet::Genome genome;
 
-	NeuralNet::NeuralMap map;
+	std::shared_ptr<NeuralNet::NeuralMap> map;
 
-	Cell(Vector2D pos_) { pos = pos_; dir = Vector2D(1, 0); id = -1; }
-	void InitaliseMap() { map = NeuralNet::NeuralMap(id); };
+	Cell(Vector2D pos_) { pos = pos_; dir = Dir(CENTER); id = -1; dead = false; }
+	void InitaliseMap() { map = std::shared_ptr<NeuralNet::NeuralMap>(new NeuralNet::NeuralMap(id)); };
 
 	void InitialiseGenome(NeuralNet::Genome genome);
 	void Step();

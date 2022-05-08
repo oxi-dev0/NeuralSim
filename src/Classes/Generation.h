@@ -1,25 +1,18 @@
 #pragma once
 
-#include "Globals.h"
-#include "Utils.h"
 #include "Queues.h"
-#include "../Tools/Log.h"
 
-extern void ProcessEffectorQueue();
+#include "Genome.h"
+#include "Output.h"
 
-inline void SimulationStep() {
-	Utils::GlobalSimData.currentStep++;
-	LOG_TRACE("Current Step: {0}", Utils::GlobalSimData.currentStep);
+extern Debug::Timer gtimer;
 
-	for (Cell* cell : Globals::GlobalGrid.cells) {
-		cell->Step();
-	}
+extern inline void ProcessEffectorQueue(int owner);
 
-	ProcessEffectorQueue();
-	if (Utils::GlobalSimData.currentStep > Utils::GlobalConfig.stepsPerGen) {
-		Utils::GlobalSimData.currentGen++;
-		Utils::GlobalSimData.currentStep = 0;
-		// NEW GEN
-	}
-}
+extern bool HasSurvived(Cell cell);
 
+extern void NewGeneration(std::vector<NeuralNet::Genome> survivorsGenomes, bool initGen = false);
+
+extern void EndGeneration();
+
+extern void SimulationStep(sf::RenderTexture& texture);

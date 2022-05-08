@@ -4,3 +4,6 @@
 [submodule "vendor/spdlog"]
 	path = vendor/spdlog
 	url = https://github.com/oxi-dev0/spdlog
+[submodule "vendor/mINI"]
+	path = vendor/mINI
+	url = https://github.com/oxi-dev0/mINI

@@ -6,7 +6,7 @@ namespace Utils {
 	Sim::SimData GlobalSimData;
 	void Init() {
 		RandRange = Random::RandomGenerator();
-		GlobalConfig = Tools::InitConfig;
-		GlobalSimData = Sim::SimData(0,0);
+		GlobalConfig = Tools::Config();
+		GlobalSimData = Sim::SimData(0,0,false);
 	}
 }

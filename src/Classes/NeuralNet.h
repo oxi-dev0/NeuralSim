@@ -11,14 +11,17 @@
 namespace NeuralNet {
 	class NeuralMap {
 	public:
-		std::vector<NeuronNode*> Nodes;
-		std::unordered_map<int, float> vals;
-		std::unordered_map<int, float> prevVals;
+		std::vector<std::shared_ptr<NeuronNode>> Nodes;
+		std::unordered_map<int, float>* vals = new std::unordered_map<int, float>();
+		std::unordered_map<int, float>* prevVals = new std::unordered_map<int, float>();
+
+		bool initialised = false;
 
 		int owner;
 
-		NeuralMap(int owner_) { owner = owner_; InitialiseNodesList(); }
-		NeuralMap() { InitialiseNodesList(); }
+		NeuralMap(int owner_) { owner = owner_; if (!initialised) { InitialiseNodesList(); } }
+		NeuralMap() {}// if (!initialised) { InitialiseNodesList(); } }
+		~NeuralMap() { vals->clear(); prevVals->clear(); delete vals; delete prevVals; }
 
 		void InitialiseNodesList();
 

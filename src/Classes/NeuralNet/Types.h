@@ -23,8 +23,8 @@ namespace NeuralNet {
 	enum Effector {
 		MOVE_X,
 		MOVE_Y,
-		MOVE_FORWARD, // cont in last moved dir
-		MOVE_FB, // back / forw in last moved dir
+		MOVE_FB, // parralel last moved dir
+		MOVE_LR, // perp from last moved dir
 		MOVE_RANDOM,
 		MOVE_NORTH,
 		MOVE_EAST,
@@ -37,12 +37,13 @@ namespace NeuralNet {
 	public:
 		uint16_t sourceId = 0; // Index of source in neuron list
 		uint16_t sinkId = 0; // Index of source in neuron list
-		uint16_t weight = 0; // Weight of gene from -4 to 4 float * 8192
+		int16_t weight = 0; // Weight of gene from -4 to 4 float * 8192
 
+		Gene() { sourceId = 0; sinkId = 0; weight = 0; }
 		Gene(uint16_t soI, uint16_t siI, float w) { sourceId = soI; sinkId = siI; weight = (int)w * 8192; }
 
 		float weightFloat() { return weight / 8192; }
-		static int16_t randWeight() { return Utils::RandRange(0, 0xffff) - 0x8000; }
+		static float randWeight() { return ((float)Utils::RandRange(0, 0xffff) - 0x8000) / 8192; }
 	};
 
 	typedef std::vector<Gene> Genome;
@@ -62,6 +63,6 @@ namespace NeuralNet {
 		NeuronNode() { type = NeuronType::EFFECTOR; id = -1; receptorType = Receptor::RECEPTORCOUNT; effectorType = Effector::ACTIONCOUNT; }
 		NeuronNode(NeuronType type_, int id_, Receptor receptorType_, Effector effectorType_) { type = type_; receptorType = receptorType_; id = id_; effectorType = effectorType_; }
 
-		float eval(std::vector<NeuronNode*> Nodes, std::unordered_map<int, float>& vals, std::unordered_map<int, float>& prevVals);
+		float eval(std::vector<std::shared_ptr<NeuronNode>> Nodes, std::unordered_map<int, float>* vals, std::unordered_map<int, float>* prevVals);
 	};
 }

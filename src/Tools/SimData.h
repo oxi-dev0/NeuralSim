@@ -5,8 +5,9 @@ namespace Sim {
 	public:
 		int currentStep;
 		int currentGen;
+		bool renderGen;
 
-		SimData() { currentStep = 0; currentGen = 0; }
-		SimData(int cs, int cg) { currentStep = cs; currentGen = cg; }
+		SimData() { currentStep = 0; currentGen = 0; renderGen = false; }
+		SimData(int cs, int cg, bool rg) { currentStep = cs; currentGen = cg; renderGen = rg; }
 	};
 }

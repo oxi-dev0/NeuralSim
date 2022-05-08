@@ -3,48 +3,56 @@
 namespace NeuralNet {
 
 	void NeuralMap::InitialiseNodesList() {
+		// Generate the array of neurons that genes reference using the type enums
+
+		initialised = true;
 		Nodes.clear();
-		vals.clear();
+		vals->clear();
 
 		for (int receptorI = Receptor::LOC_X; receptorI != Receptor::RECEPTORCOUNT; receptorI++)
 		{
-			NeuronNode node(NeuronType::RECEPTOR, -1, static_cast<Receptor>(receptorI), Effector::ACTIONCOUNT);
+			NeuronNode* node = new NeuronNode(NeuronType::RECEPTOR, -1, static_cast<Receptor>(receptorI), Effector::ACTIONCOUNT);
 			int id = Nodes.size();
-			Nodes.push_back(&node);
-			node.id = id;
-			vals[id] = 0.5;
+			Nodes.push_back(std::shared_ptr<NeuronNode>(node));
+			node->id = id;
+			vals->operator[](id)=0.5;
 		}
 
 		for (int c = 0; c < Utils::GlobalConfig.internalNeuronCount; c++)
 		{
-			NeuronNode node(NeuronType::INTERNAL, -1, Receptor::RECEPTORCOUNT, Effector::ACTIONCOUNT);
+			NeuronNode* node = new NeuronNode(NeuronType::INTERNAL, -1, Receptor::RECEPTORCOUNT, Effector::ACTIONCOUNT);
 			int id = Nodes.size();
-			Nodes.push_back(&node);
-			node.id = id;
-			vals[id] = 0.5;
+			Nodes.push_back(std::shared_ptr<NeuronNode>(node));
+			node->id = id;
+			vals->operator[](id) = 0.5;
 		}
 
 		for (int effectorI = Effector::MOVE_X; effectorI != Effector::ACTIONCOUNT; effectorI++)
 		{
-			NeuronNode node(NeuronType::EFFECTOR, -1, Receptor::RECEPTORCOUNT, static_cast<Effector>(effectorI));
+			NeuronNode* node = new NeuronNode(NeuronType::EFFECTOR, -1, Receptor::RECEPTORCOUNT, static_cast<Effector>(effectorI));
 			int id = Nodes.size();
-			Nodes.push_back(&node);
-			node.id = id;
-			vals[id] = 0.5;
+			Nodes.push_back(std::shared_ptr<NeuronNode>(node));
+			node->id = id;
+			vals->operator[](id) = 0.5;
 		}
 
-		prevVals.clear();
-		prevVals = vals;
+		prevVals->clear();
+		for (auto kv : *vals) {
+			prevVals->operator[](kv.first) = kv.second;
+		}
 	}
 
 	void NeuralMap::FormMapFromGenome(std::vector<Gene> Genome) {
+		// Form a connection between neurons for each gene
 		for (Gene& gene : Genome) {
-			NeuronNode* sink = Nodes[gene.sinkId];
-			NeuronNode* source = Nodes[gene.sourceId];
+			std::shared_ptr<NeuronNode> sink = Nodes[gene.sinkId];
+			std::shared_ptr<NeuronNode> source = Nodes[gene.sourceId];
 
+			// Give the dest neuron the source neuron's id as well as the connection weight
 			sink->in.push_back(gene.sourceId);
-			LOG_TRACE(gene.weightFloat());
 			sink->inWeights.push_back(gene.weightFloat());
+
+			// Tell the source and dest neuron that they are connected on each side
 			source->connected = true;
 			sink->connectedIn = true;
 		}
@@ -55,13 +63,9 @@ namespace NeuralNet {
 			LOG_ERROR("Tried to execute a NeuralMap with no owner Node");
 			return;
 		}
-		
-		prevVals.clear();
-		prevVals = vals;
-		vals.clear();
 
-		// For each effector, trace back down the tree (using cached values to prevent recalculation) (inputs are stored in the cache before hand)
-		for (NeuronNode* Node : Nodes) {
+		// For each effector, trace back down the neuron tree (using cached values to prevent recalculation) (inputs are stored in the cache before hand)
+		for (auto Node : Nodes) {
 			if (!Node->type == NeuronType::EFFECTOR) {
 				continue;
 			}
@@ -71,10 +75,13 @@ namespace NeuralNet {
 			}
 
 			float val = Node->eval(Nodes, vals, prevVals);
-			vals[Node->id] = val;
+			vals->operator[](Node->id) = val;
 
-			if (std::abs(val) > 0.5) {
-				Queues::EffectorQueue.push_back(Queues::ActionEvent(owner, Node->effectorType, val));
+			if (Queues::EffectorQueue.find(owner) != Queues::EffectorQueue.end()) {
+				Queues::EffectorQueue[owner].push_back(std::shared_ptr<Queues::ActionEvent>(new Queues::ActionEvent(Node->effectorType, val)));
+			}
+			else {
+				Queues::EffectorQueue[owner] = std::vector<std::shared_ptr<Queues::ActionEvent>>({ std::shared_ptr<Queues::ActionEvent>(new Queues::ActionEvent(Node->effectorType, val)) });
 			}
 		}
 	}

@@ -17,7 +17,8 @@ namespace Tools {
 			{ "p", "population" },
 			{ "fr", "framerate" },
 			{ "in", "internalneurons"},
-			{ "spg", "stepspergen"}
+			{ "spg", "stepspergen"},
+			{ "c", "config"}
 		};
 
 		std::vector<std::tuple<char*, char*>> pairs;
@@ -63,33 +64,44 @@ namespace Tools {
 		return pairs;
 	}
 
-	void Config::InitFromArgv(int argc, char** argv) {
+	Config Config::InitFromArgv(int argc, char** argv) {
 		std::vector<std::tuple<char*, char*>> pairs = ArgvLongPairs(argc, argv);
 
-		Config newConfig;
-
-#ifdef DEBUG
-		LOG_TRACE("[COMMAND ARGS]");
-#endif
+		std::string configFile = "config.ini";
 
 		int i = 0;
 		for (std::tuple<char*, char*>& pair : pairs) {
-#ifdef DEBUG
-			LOG_TRACE("	ARG PAIR[{0}]: {1} = {2}", i, std::get<0>(pair), std::get<1>(pair));
-#endif
 			std::string key(std::get<0>(pair));
 			std::string val(std::get<1>(pair));
-			
-			if (key == "sizeX") { newConfig.sizeX = std::stoi(val); }
-			if (key == "sizeY") { newConfig.sizeY = std::stoi(val); }
-			if (key == "population") { newConfig.population = std::stoi(val); }
-			if (key == "framerate") { newConfig.framerate = std::stoi(val); }
-			if (key == "internalneurons") { newConfig.internalNeuronCount = std::stoi(val); }
-			if (key == "stepspergen") { newConfig.stepsPerGen = std::stoi(val); }
+
+			if (key == "config") { configFile = val; }
 
 			i++;
 		}
 
-		InitConfig = newConfig;
+		return InitFromIni(configFile);
+	}
+
+	Config Config::InitFromIni(const std::string iniS) {
+		mINI::INIFile file(iniS);
+		mINI::INIStructure ini;
+
+		file.read(ini);
+
+		Config newConfig;
+		newConfig.sizeX = std::stoi(ini["scene"]["sizeX"]);
+		newConfig.sizeY = std::stoi(ini["scene"]["sizeY"]);
+		newConfig.tileSize = std::stoi(ini["scene"]["tileSize"]);
+
+		newConfig.framerate = ini["render"]["framerate"];
+		newConfig.gensBetweenRender = std::stoi(ini["render"]["gensBetweenRender"]);
+
+		newConfig.population = std::stoi(ini["sim"]["population"]);
+		newConfig.internalNeuronCount = std::stoi(ini["sim"]["internalNeuronCount"]);
+		newConfig.genomeLength = std::stoi(ini["sim"]["genomeLength"]);
+		newConfig.stepsPerGen = std::stoi(ini["sim"]["stepsPerGen"]);
+		newConfig.mutationChance = std::stof(ini["sim"]["mutationChance"]);
+
+		return newConfig;
 	}
 }

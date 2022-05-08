@@ -17,10 +17,12 @@ project "BioSim"
 	targetdir ("bin/" .. outputdir)
 	objdir ("bin-int/" .. outputdir)
 
-	debugargs "-x 128 -y 128 -p 50 -in 2 -fr 4 -spg 350"
+	debugargs "-c config.ini"
+	buildoptions { "/bigobj" }
 
 	postbuildcommands {
-	  "{COPY} vendor/ffmpeg/ffmpeg.exe %{cfg.targetdir}"
+	  "{COPY} vendor/ffmpeg/ffmpeg.exe %{cfg.targetdir}",
+	  "{COPY} config.ini %{cfg.targetdir}"
 	}
 
 	files 
@@ -32,7 +34,8 @@ project "BioSim"
 	includedirs
 	{
 		"vendor/SFML/include/",
-		"vendor/spdlog/include"
+		"vendor/spdlog/include",
+		"vendor/mINI/include"
 	}
 
 	libdirs { "vendor/SFML/extlibs/libs-msvc-universal/x64", "vendor/SFML/lib" }

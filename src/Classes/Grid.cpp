@@ -21,14 +21,24 @@ Vector2D Grid::findEmptyLocation() const {
 
 void Grid::MoveCell(Vector2D oldPos, Vector2D offset) {
     uint16_t id = at(oldPos);
-    Cell* cell = cells[id];
+    auto cell = cells[id];
+    if (cell == nullptr) { return; }
     cell->pos = cell->pos + offset;
     if (cell->pos.x >= columns.size() || cell->pos.y >= columns[0].Size()) {
-        set(cell->pos - offset, 0);
-        delete cell;
+        cell->pos = cell->pos - offset;
+        return;
     }
     else {
+        if (!isEmptyAt(cell->pos)) {
+            cell->pos = cell->pos - offset;
+            return;
+        }
         set(cell->pos - offset, 0);
         set(cell->pos, id);
+        cell->dir = toDir((cell->pos - (cell->pos - offset)));
     }
+}
+
+Grid::~Grid() {
+    cells.clear();
 }

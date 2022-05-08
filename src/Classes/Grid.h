@@ -13,7 +13,7 @@ const uint16_t BARRIER = 0xffff;
 class Grid
 {
 public:
-	std::vector<Cell*> cells = std::vector<Cell*>({ nullptr });
+	std::vector<std::shared_ptr<Cell>> cells = std::vector<std::shared_ptr<Cell>>({ nullptr });
 
 public:
 	struct Column {
@@ -44,8 +44,10 @@ public:
 	void set(Vector2D loc, uint16_t val) { if (loc.x < sizeX() && loc.y < sizeY()) { columns[loc.x][loc.y] = val; } }
 	void set(uint16_t x, uint16_t y, uint16_t val) { if (x < sizeX() && y < sizeY()) { columns[x][y] = val; } }
 
-	void NewCell(Cell* cell) { uint16_t i = cells.size(); cells.push_back(cell); set(cell->pos, i); cell->id = i; }
+	void NewCell(std::shared_ptr<Cell> cell) { uint16_t i = cells.size(); cells.push_back(cell); set(cell->pos, i); cell->id = i; }
 	void MoveCell(Vector2D oldPos, Vector2D offset);
+
+	~Grid();
 
 	Vector2D findEmptyLocation() const;
 	void createBarrier(unsigned barrierType);

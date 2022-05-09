@@ -111,6 +111,8 @@ namespace Visualisation {
 	void ArrowHead(sf::RenderTexture& texture, float width, float height, sf::Color col, sf::Vector2f headPoint, sf::Vector2f backTarget) {
 		auto arrowBack = headPoint + ((backTarget - headPoint).normalized() * height);
 		auto dir = (headPoint - arrowBack).normalized();
+		headPoint += dir * 4.0f;
+		arrowBack += dir * 4.0f;
 		auto perp = sf::Vector2f(dir.y, -dir.x);
 
 		sf::VertexArray arrow(sf::Triangles, 6);
@@ -179,7 +181,7 @@ namespace Visualisation {
 		sf::Font font;
 		assert(font.loadFromFile("resources/arial.ttf"));
 
-		double k = 400;
+		double k = Utils::GlobalConfig.kconst;
 		double iters = 10000;
 
 		std::vector<double> radii = nodesoup::size_radiuses(g, 20.0, k);
@@ -342,10 +344,17 @@ namespace Visualisation {
 		Edges edges = FormMapEdges(file);
 
 		std::stringstream windowTss;
-		windowTss << "Neural Map Visualisation: " << file;
+		windowTss << "Visualisation: " << file << "; " << std::get<0>(edges).size() << " Nodes";
 		std::string windowT(windowTss.str());
 
 		sf::RenderWindow window(sf::VideoMode(texture.getSize().x, texture.getSize().y), windowT);
+
+		sf::View view = texture.getDefaultView();
+		sf::View winView = window.getDefaultView();
+		sf::Vector2f oldPos;
+		bool moving = false;
+
+		float zoom = 1;
 
 		while (window.isOpen())
 		{
@@ -353,9 +362,61 @@ namespace Visualisation {
 			sf::Event event;
 			while (window.pollEvent(event))
 			{
-				// "close requested" event: we close the window
-				if (event.type == sf::Event::Closed)
-					window.close();
+				switch (event.type) {
+				case sf::Event::Closed:
+						window.close();
+						break;
+				case sf::Event::Resized:
+				{
+					sf::ContextSettings settings;
+					settings.antialiasingLevel = 8;
+					if (!texture.create(event.size.width, event.size.height, settings)) { LOG_CRITICAL("Error resizing texture"); }
+					view = sf::View(sf::Vector2f(texture.getSize().x / 2, texture.getSize().y / 2), sf::Vector2f(event.size.width, event.size.height));
+					texture.setView(view);
+					winView.setSize(sf::Vector2f(event.size.width, event.size.height));
+					winView.setCenter(sf::Vector2f(event.size.width, event.size.height) / 2);
+					window.setView(winView);
+				}
+						break;
+				case sf::Event::MouseButtonPressed:
+					if (event.mouseButton.button == 0) {
+						moving = true;
+						oldPos = texture.mapPixelToCoords(sf::Vector2i(event.mouseButton.x, event.mouseButton.y));
+					}
+					break;
+				case  sf::Event::MouseButtonReleased:
+					if (event.mouseButton.button == 0) {
+						moving = false;
+					}
+					break;
+				case sf::Event::MouseMoved:
+				{
+					if (!moving)
+						break;
+
+					const sf::Vector2f newPos = texture.mapPixelToCoords(sf::Vector2i(event.mouseMove.x, event.mouseMove.y));
+					const sf::Vector2f deltaPos = oldPos - newPos;
+
+					view.setCenter(view.getCenter() + deltaPos);
+					texture.setView(view);
+
+					oldPos = texture.mapPixelToCoords(sf::Vector2i(event.mouseMove.x, event.mouseMove.y));
+					break;
+				}
+				case sf::Event::MouseWheelScrolled:
+					if (moving)
+						break;
+
+					if (event.mouseWheelScroll.delta <= -1)
+						zoom = std::min(2.f, zoom + .1f);
+					else if (event.mouseWheelScroll.delta >= 1)
+						zoom = std::max(.5f, zoom - .1f);
+
+					view.setSize(sf::Vector2f(texture.getSize().x, texture.getSize().y));
+					view.zoom(zoom);
+					texture.setView(view);
+					break;
+				}
 			}
 
 			window.clear();

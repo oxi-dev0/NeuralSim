@@ -19,7 +19,8 @@ namespace Tools {
 			{ "h", "help" },
 			{ "s", "simulate" },
 			{ "v", "visualise" },
-			{ "c", "config"}
+			{ "c", "config"},
+			{ "k", "kconst"}
 		};
 
 		std::unordered_map<std::string, bool> valMap = {
@@ -27,7 +28,8 @@ namespace Tools {
 			{ "help", false },
 			{ "simulate", false },
 			{ "visualise", true },
-			{ "config", true }
+			{ "config", true },
+			{ "kconst", true }
 		};
 
 		std::unordered_map<std::string, std::string> map;
@@ -77,6 +79,7 @@ namespace Tools {
 
 		std::string configFile = "config/config.ini";
 		std::string nmFile = "";
+		int kconst = 400;
 
 		for (auto& kv : map) {
 			std::string key(kv.first);
@@ -84,10 +87,11 @@ namespace Tools {
 
 			if (key == "config") { configFile = val; }
 			if (key == "visualise") { nmFile = val; }
+			if (key == "kconst") { kconst = std::stoi(val); }
 		}
 
 		if (nmFile != "") {
-			return Config(1000, 1000, 1, 0, 0, 0, 0, 0, 0, "", nmFile);
+			return Config(1000, 1000, 1, 0, 0, 0, 0, 0, 0, "", nmFile, kconst);
 		}
 
 		return InitFromIni(configFile);

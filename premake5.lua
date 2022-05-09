@@ -20,6 +20,7 @@ project "BioSim"
 	buildoptions { "/bigobj" }
 
 	postbuildcommands {
+	  "{MKDIR} %{cfg.targetdir}/resources",
 	  "{COPY} vendor/ffmpeg/ffmpeg.exe %{cfg.targetdir}/resources",
 	  "{COPY} resources %{cfg.targetdir}/resources",
 	  "{COPY} config %{cfg.targetdir}/config"

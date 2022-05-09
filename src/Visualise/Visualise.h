@@ -16,7 +16,24 @@
 
 namespace Visualisation {
 
+	extern std::string shrtNodeToLong(std::string shrt);
+
 	typedef std::tuple<int, int> Connection;
+
+	struct Rect {
+		float left;
+		float right;
+		float top;
+		float bottom;
+
+		Rect() { left = 0; right = 0; top = 0; bottom = 0; }
+		Rect(float left_, float right_, float top_, float bottom_) { left = left_; right = right_; top = top_; bottom = bottom_; }
+
+		bool PointInside(sf::Vector2f point) {
+			return point.x > left and point.x < right &&
+				point.y > top and point.y < bottom;
+		};
+	};
 
 	struct VisualNode {
 	public:

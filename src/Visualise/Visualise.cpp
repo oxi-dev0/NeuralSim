@@ -171,7 +171,31 @@ namespace Visualisation {
 		return (1 - t) * a + t * b;
 	}
 
-	void RenderNeuralMap(sf::RenderTexture& texture, Edges edges) {
+	std::string shrtNodeToLong(std::string shrt) {
+		std::unordered_map<std::string, std::string> map = {
+			{"Lx", "Locaton X"},
+			{"Ly", "Location Y"},
+			{"RND", "Random"},
+			{"AGE", "Age"},
+			{"OSC", "Oscillator"},
+
+			{"Mx", "Move X"},
+			{"My", "Move Y"},
+			{"Mfb", "Move Forwards/Backwards"},
+			{"Mlr", "Move Left/Right"},
+			{"Mrn", "Move Random"},
+			{"McN", "Move North"},
+			{"McE", "Move East"},
+			{"McS", "Move South"},
+			{"McW", "Move West"}
+		};
+
+		if (map.find(shrt) == map.end()) { return ""; }
+		
+		return map[shrt];
+	}
+
+	std::vector<nodesoup::Point2D> RenderNeuralMap(sf::RenderTexture& texture, Edges edges, sf::Vector2f mousePos, std::vector<nodesoup::Point2D> positionsCache) {
 		auto g = std::get<0>(edges);
 		auto nodes = std::get<1>(edges);
 
@@ -186,7 +210,12 @@ namespace Visualisation {
 
 		std::vector<double> radii = nodesoup::size_radiuses(g, 20.0, k);
 
-		positions = nodesoup::fruchterman_reingold(g, texture.getSize().x, texture.getSize().y, iters, k, cback);
+		if (positionsCache.size() == 0) {
+			positions = nodesoup::fruchterman_reingold(g, texture.getSize().x, texture.getSize().y, iters, k, cback);
+		}
+		else {
+			positions = positionsCache;
+		}
 		sf::Vector2f total;
 		for (auto& pos : positions) {
 			total.x += pos.x;
@@ -203,6 +232,9 @@ namespace Visualisation {
 
 		std::vector<sf::CircleShape> nodesToRender;
 		std::vector<sf::Text> textToRender;
+
+		// Array of ([linepoints], weight)
+		std::vector < std::tuple<std::vector<sf::Vector2f>, float>> connectionLinePoints;
 
 		for (nodesoup::vertex_id_t nodeId = 0; nodeId < g.size(); nodeId++) {
 			if (nodes[nodeId].connections.size() == 0 && nodes[nodeId].forwardCons.size() == 0) { continue; }
@@ -261,7 +293,7 @@ namespace Visualisation {
 				int weightI = std::get<1>(con);
 
 				if (refId == nodeId) {
-					// SELF REFERENCE; NEED TO DO CIRCLE
+					// SELF REFERENCE; NEED CIRCLE
 					sf::Vector2f orig = sf::Vector2f(positions[nodeId].x, positions[nodeId].y);
 					float radius = (float)radii[nodeId] + 5.0f;
 
@@ -307,6 +339,8 @@ namespace Visualisation {
 
 				std::vector<sf::Vector2f> curvedPoints = CurvedLine(texture, width, lineCol, pos1, bendPos, pos2);
 
+				connectionLinePoints.push_back(std::tuple<std::vector<sf::Vector2f>, float>(curvedPoints, weightF));
+
 				float refRadius = (float)radii[refId];
 				sf::Vector2f closestP;
 				int closestI = -1;
@@ -335,7 +369,72 @@ namespace Visualisation {
 			texture.draw(text);
 		}
 
+		std::string hoveredText = "";
+
+		// Hover over line for weight
+		for (auto& conLine : connectionLinePoints) {
+			std::vector<sf::Vector2f> points = std::get<0>(conLine);
+			float weight = std::get<1>(conLine);
+
+			/*Rect lineBounds;
+			for (auto& point : points) {
+				lineBounds.left = std::min(lineBounds.left, point.x);
+				lineBounds.right = std::max(lineBounds.right, point.x);
+				lineBounds.top = std::min(lineBounds.top, point.y);
+				lineBounds.bottom = std::max(lineBounds.bottom, point.y);
+			}
+
+			if (!lineBounds.PointInside(mousePos)) { continue; }*/
+
+			bool hovered = false;
+			for (auto& point : points) {
+				auto v = point - mousePos;
+				float dist = std::sqrt(pow(v.x, 2) + pow(v.y, 2));
+				if (dist <= 10) {
+					hovered = true;
+				}
+			}
+
+			if (hovered) {
+				hoveredText = std::to_string(weight);
+			}
+		}
+
+		// Nodes get hover priority
+		for (nodesoup::vertex_id_t nodeId = 0; nodeId < g.size(); nodeId++) {
+			auto v = sf::Vector2f(positions[nodeId].x, positions[nodeId].y) - mousePos;
+			float dist = std::sqrt(pow(v.x, 2) + pow(v.y, 2));
+			if (dist <= (float)radii[nodeId]) {
+				std::string lng = shrtNodeToLong(nodes[nodeId].name);
+				if (lng != "") {
+					hoveredText = lng;
+				}
+				else {
+					hoveredText = "Internal";
+				}
+			}
+		}
+
+		if (hoveredText != "") {
+			sf::Text text;
+			text.setFont(font);
+			std::string str = hoveredText;
+			text.setString(str);
+			text.setCharacterSize(20); // pixels
+
+			sf::Vector2f pos;
+			pos.x = (mousePos.x + 20);
+			pos.y = (mousePos.y + 10);
+
+			text.setPosition(pos);
+			text.setFillColor(sf::Color::Black);
+
+			texture.draw(text);
+		}
+
 		texture.display();
+
+		return positions;
 	}
 
 	void VisualiseNeuralMap(sf::RenderTexture& texture, std::string file) {
@@ -355,6 +454,8 @@ namespace Visualisation {
 		bool moving = false;
 
 		float zoom = 1;
+
+		std::vector<nodesoup::Point2D> posCache;
 
 		while (window.isOpen())
 		{
@@ -419,10 +520,14 @@ namespace Visualisation {
 				}
 			}
 
+			auto windowPos = window.getPosition();
+			sf::Vector2f mousePos = texture.mapPixelToCoords(sf::Mouse::getPosition(window));// -sf::Vector2f(windowPos.x, windowPos.y);
+
 			window.clear();
-			RenderNeuralMap(texture, edges);
+			posCache = RenderNeuralMap(texture, edges, mousePos, posCache);
 			const sf::Texture& dt = texture.getTexture();
 			sf::Sprite sprite(dt);
+
 			window.draw(sprite);
 			window.display();
 		}

@@ -3,86 +3,115 @@
 #define MAX_ALLOWED_BUFFER 100
 
 namespace Tools {
-	std::vector<std::tuple<char*, char*>> ArgvLongPairs(int argc, char** argv) {
+	std::unordered_map<std::string, std::string> ArgvLongPairs(int argc, char** argv) {
 		char** argvC = argv;
 		int argcC = argc;
 
-		// Remove first item from argvC
+		if (argcC < 2) {
+			return std::unordered_map<std::string, std::string>();
+		}
+
+		// Remove exe item from argvC
 		argvC++;
 		argcC--;
 
 		std::unordered_map<std::string, std::string> shortMap = {
-			{ "x", "sizeX"},
-			{ "y", "sizeY" },
-			{ "p", "population" },
-			{ "fr", "framerate" },
-			{ "in", "internalneurons"},
-			{ "spg", "stepspergen"},
+			{ "h", "help" },
+			{ "s", "simulate" },
+			{ "v", "visualise" },
 			{ "c", "config"}
 		};
 
-		std::vector<std::tuple<char*, char*>> pairs;
-		std::tuple<char*, char*> currentPair;
-		while (argcC > 0) {
-			char* str = *argvC;
+		std::unordered_map<std::string, bool> valMap = {
+			// name, takes value
+			{ "help", false },
+			{ "simulate", false },
+			{ "visualise", true },
+			{ "config", true }
+		};
 
-			// If first item in pair
-			if (argcC % 2 == 0) {
+		std::unordered_map<std::string, std::string> map;
+		std::string current = "";
+		bool reqVal = false;
+		while (argcC > 0) {
+			std::string str(*argvC);
+
+			if (!reqVal) {
 				bool shrt = false;
 
 				if (str[1] == '-') {
-					str += 2;
+					str = str.substr(2);
 				}
 				else {
-					str += 1;
+					str = str.substr(1);
 					shrt = true;
 				}
 
-				currentPair = std::tuple<char*, char*>();
-
 				// Transform short to long param
 				if (shrt) {
-					std::string strV(str);
-					std::string lng = shortMap[strV];
-					char* strC = new char[strlen(str)];
-					strcpy(strC, lng.c_str());
-					std::get<0>(currentPair) = strC;
+					std::string lng = shortMap[str];
+					map[lng] = "NULL";
+					current = lng;
+					reqVal = valMap[lng];
 				}
 				else {
-					std::get<0>(currentPair) = str;
+					map[str] = "NULL";
+					current = str;
+					reqVal = valMap[str];
 				}
 			}
 			else {
-				std::get<1>(currentPair) = str;
-				pairs.push_back(currentPair);
+				map[current] = str;
+				reqVal = false;
 			}
 
 			argvC++;
 			argcC--;
 		}
 
-		return pairs;
+		return map;
 	}
 
 	Config Config::InitFromArgv(int argc, char** argv) {
-		std::vector<std::tuple<char*, char*>> pairs = ArgvLongPairs(argc, argv);
+		std::unordered_map<std::string, std::string> map = ArgvLongPairs(argc, argv);
 
-		std::string configFile = "config.ini";
+		std::string configFile = "config/config.ini";
+		std::string nmFile = "";
 
-		int i = 0;
-		for (std::tuple<char*, char*>& pair : pairs) {
-			std::string key(std::get<0>(pair));
-			std::string val(std::get<1>(pair));
+		for (auto& kv : map) {
+			std::string key(kv.first);
+			std::string val(kv.second);
 
 			if (key == "config") { configFile = val; }
+			if (key == "visualise") { nmFile = val; }
+		}
 
-			i++;
+		if (nmFile != "") {
+			return Config(1000, 1000, 1, 0, 0, 0, 0, 0, 0, "", nmFile);
 		}
 
 		return InitFromIni(configFile);
 	}
 
+	ProgramMode Config::ModeFromArgv(int argc, char** argv) {
+		std::unordered_map<std::string, std::string> map = ArgvLongPairs(argc, argv);
+
+		ProgramMode mode = ProgramMode::SIMULATE;
+
+		for (auto& kv : map) {
+			std::string key(kv.first);
+
+			if (key == "help") { mode = ProgramMode::HELP; }
+			if (key == "simulate") { mode = ProgramMode::SIMULATE; }
+			if (key == "visualise") { mode = ProgramMode::VISUALISE;  }
+		}
+
+		return mode;
+	}
+
 	Config Config::InitFromIni(const std::string iniS) {
+		if (!std::filesystem::exists(iniS)) { LOG_CRITICAL("Could not load configuration file ({0})", iniS); std::terminate(); }
+
 		mINI::INIFile file(iniS);
 		mINI::INIStructure ini;
 

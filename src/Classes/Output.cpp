@@ -52,7 +52,7 @@ void ProduceVideo(uint16_t gen, std::string fps) {
     LOG_TRACE("Writing Generation {0}'s frames to {1}", gen, outfile);
 
     std::stringstream cmdpipe = std::stringstream();
-    cmdpipe << "\"ffmpeg.exe\"" << " -framerate " << fps << " -i" << " temp/framerender-" << gen << "-%04d.png " << outfile;
+    cmdpipe << "\"resources/ffmpeg.exe\"" << " -framerate " << fps << " -i" << " temp/framerender-" << gen << "-%04d.png " << outfile;
     std::string cmd = cmdpipe.str();
 
     std::wstring_convert<std::codecvt_utf8_utf16<wchar_t>> converter;
@@ -77,32 +77,32 @@ void ExportNeuralMap(std::shared_ptr<NeuralNet::NeuralMap> map) {
         std::filesystem::create_directory("out");
     }
     std::stringstream filename;
-    filename << "out/" << Utils::GlobalSimData.currentGen << "-" << map->owner << "-NeuralMap.txt";
+    filename << "out/" << Utils::GlobalSimData.currentGen << "-" << map->owner << "-NeuralMap.nm";
     std::string fn(filename.str());
 
     std::ofstream f(fn);
     int n = 0;
     for (auto& node : map->Nodes) {
         if (node == nullptr) { continue; }
-        f << n << "-";
         if (node->type == NeuralNet::NeuronType::RECEPTOR) {
-            f << "r:";
+            f << "r ";
             std::string nName = std::get<0>(NeuralNet::receptorName(node->receptorType));
             f << nName;
         }
         if (node->type == NeuralNet::NeuronType::INTERNAL) {
-            f << "i";
+            f << "i ";
+            f << "N" << node->id << " ";
         }
         if (node->type == NeuralNet::NeuronType::EFFECTOR) {
-            f << "e:";
+            f << "e ";
             std::string nName = std::get<0>(NeuralNet::effectorName(node->effectorType));
-            f << nName;
+            f << nName << " ";
         }
 
         int i = 0;
         for (int in : node->in) {
             float weight = node->inWeights[i];
-            f << "{" << in << "@" << (int)weight * 80192 << "}";
+            f << "{" << in << "@" << (int)(weight * 8192.0f) << "}";
             i++;
         }
 

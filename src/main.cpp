@@ -19,56 +19,78 @@
 
 #include "Classes/Output.h"
 
+#include "Visualise/Visualise.h"
+
 #define _SILENCE_ALL_CXX17_DEPRECATION_WARNINGS
 #define _SILENCE_CXX17_CODECVT_HEADER_DEPRECATION_WARNING
+
+class LifetimeHandler {
+public:
+    Debug::Timer lifeTimer;
+
+    LifetimeHandler() {
+        lifeTimer = Debug::Timer();
+    }
+
+    ~LifetimeHandler() {
+        LOG_INFO("Simulation lasted {0}s", lifeTimer.Elapsed());
+    }
+};
 
 void usage(char* progName)
 {
     std::cout << progName << " [options]" << std::endl <<
         "Options:" << std::endl <<
         "-h   | --help                          Print this help" << std::endl <<
-        "-x   | --sizeX              [int]      Specify the grid X size" << std::endl <<
-        "-y   | --sizeY              [int]      Specify the grid Y size" << std::endl <<
-        "-p   | --population         [int]      Specify the population size per generation" << std::endl <<
-        "-in  | --internalneurons    [int]      The number of internal neurons each cell has" << std::endl <<
-        "-fr  | --framerate          [int]      The framerate of rendered generations" << std::endl <<
-        "-spg | --stepspergen        [int]      The number of simulator steps per generation" << std::endl;
+        "[MODES]" << std::endl <<
+        "-s   | --simulate                      Simulate generations of cells [DEFAULT]" << std::endl <<
+        "-v   | --visualise       [*.nm]        Visualise an exported neural map file" << std::endl <<
+        "[OTHER]" << std::endl <<
+        "-c   | --config          [*.ini]       Specify the simulation configuration file [DEFAULT: config.ini]" << std::endl;
+}
+
+void sim(sf::RenderTexture& texture) {
+    LifetimeHandler lh = LifetimeHandler();
+    NewGeneration(std::vector<NeuralNet::Genome>(), true);
+    while (true) {
+        SimulationStep(texture);
+    }
 }
 
 int main(int argc, char** argv)
 {
-    std::string arg(argv[1]);
-    if (arg == "--help" || arg == "-h") {
-        usage(argv[0]);
-        return 0;
-    }
-
 #ifdef DIST
     FreeConsole();
 #else
     Debug::Log::Init();
 #endif
 
+    Tools::ProgramMode mode = Tools::Config::ModeFromArgv(argc, argv);
+    if (mode == Tools::ProgramMode::HELP) { usage(argv[0]); return 0; }
+
     LOG_INFO("Started Engine");
 
     Debug::Timer inittmr;
-
     Tools::Config config = Tools::Config::InitFromArgv(argc, argv);
+
     Utils::Init();
     Globals::Init();
     Utils::GlobalConfig = config;
 
     LOG_INFO("Initialised Arguments, Utils and Globals in {0}s", inittmr.Elapsed());
 
+    sf::ContextSettings settings;
+    settings.antialiasingLevel = 8;
+
     sf::RenderTexture texture;
-    if (!texture.create(Utils::GlobalConfig.sizeX * Utils::GlobalConfig.tileSize, Utils::GlobalConfig.sizeY * Utils::GlobalConfig.tileSize))
+    if (!texture.create(Utils::GlobalConfig.sizeX * Utils::GlobalConfig.tileSize, Utils::GlobalConfig.sizeY * Utils::GlobalConfig.tileSize, settings))
     {
         LOG_CRITICAL("Could not initialise the render texture");
     }
     else {
-        NewGeneration(std::vector<NeuralNet::Genome>(), true);
-        while (true) {
-            SimulationStep(texture);
+        switch (mode) {
+        case Tools::ProgramMode::SIMULATE: sim(texture); break;
+        case Tools::ProgramMode::VISUALISE: Visualisation::VisualiseNeuralMap(texture, Utils::GlobalConfig.neuralmap); break;
         }
     }
 

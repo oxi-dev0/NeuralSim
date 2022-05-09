@@ -42,8 +42,8 @@ namespace NeuralNet {
 		Gene() { sourceId = 0; sinkId = 0; weight = 0; }
 		Gene(uint16_t soI, uint16_t siI, float w) { sourceId = soI; sinkId = siI; weight = (int)w * 8192; }
 
-		float weightFloat() { return weight / 8192; }
-		static float randWeight() { return ((float)Utils::RandRange(0, 0xffff) - 0x8000) / 8192; }
+		float weightFloat() { return weight / 8192.0f; }
+		static float randWeight() { return ((float)Utils::RandRange(0, 0xffff) - 0x8000) / 8192.0f; }
 	};
 
 	typedef std::vector<Gene> Genome;

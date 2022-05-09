@@ -7,3 +7,9 @@
 [submodule "vendor/mINI"]
 	path = vendor/mINI
 	url = https://github.com/oxi-dev0/mINI
+[submodule "vendor/nodesoup"]
+	path = vendor/nodesoup
+	url = https://github.com/olvb/nodesoup
+[submodule "vendor/SelbaWard"]
+	path = vendor/SelbaWard
+	url = https://github.com/oxi-dev0/SelbaWard

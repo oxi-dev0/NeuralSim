@@ -17,12 +17,12 @@ project "BioSim"
 	targetdir ("bin/" .. outputdir)
 	objdir ("bin-int/" .. outputdir)
 
-	debugargs "-c config.ini"
 	buildoptions { "/bigobj" }
 
 	postbuildcommands {
-	  "{COPY} vendor/ffmpeg/ffmpeg.exe %{cfg.targetdir}",
-	  "{COPY} config.ini %{cfg.targetdir}"
+	  "{COPY} vendor/ffmpeg/ffmpeg.exe %{cfg.targetdir}/resources",
+	  "{COPY} resources %{cfg.targetdir}/resources",
+	  "{COPY} config %{cfg.targetdir}/config"
 	}
 
 	files 
@@ -35,10 +35,12 @@ project "BioSim"
 	{
 		"vendor/SFML/include/",
 		"vendor/spdlog/include",
-		"vendor/mINI/include"
+		"vendor/mINI/include",
+		"vendor/nodesoup/include",
+		"vendor/SelbaWard/src"
 	}
 
-	libdirs { "vendor/SFML/extlibs/libs-msvc-universal/x64", "vendor/SFML/lib" }
+	libdirs { "vendor/SFML/extlibs/libs-msvc-universal/x64", "vendor/SFML/lib", "vendor/nodesoup/bin/src/Release", "vendor/nodesoup/bin/src/Debug" }
 	links { "opengl32.lib", "freetype.lib", "winmm.lib", "gdi32.lib", "openal32.lib", "flac.lib", "vorbisenc.lib", "vorbisfile.lib", "vorbis.lib", "ogg.lib", "ws2_32.lib" }
 
 
@@ -54,7 +56,7 @@ project "BioSim"
 		staticruntime "on"
 		runtime "Debug"
 
-		links { "sfml-graphics-s-d.lib", "sfml-system-s-d.lib", "sfml-window-s-d.lib" }
+		links { "sfml-graphics-s-d.lib", "sfml-system-s-d.lib", "sfml-window-s-d.lib", "nodesoup-d.lib" }
 
 	filter "configurations:Release"
 		defines "RELEASE"
@@ -62,7 +64,7 @@ project "BioSim"
 		staticruntime "on"
 		runtime "Release"
 
-		links { "sfml-graphics-s.lib", "sfml-system-s.lib", "sfml-window-s.lib" }
+		links { "sfml-graphics-s.lib", "sfml-system-s.lib", "sfml-window-s.lib", "nodesoup.lib" }
 
 	filter "configurations:Dist"
 		defines "DIST"
@@ -70,4 +72,4 @@ project "BioSim"
 		staticruntime "on"
 		runtime "Release"
 
-		links { "sfml-graphics-s.lib", "sfml-system-s.lib", "sfml-window-s.lib" }
+		links { "sfml-graphics-s.lib", "sfml-system-s.lib", "sfml-window-s.lib", "nodesoup.lib" }

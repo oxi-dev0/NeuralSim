@@ -4,7 +4,7 @@ Debug::Timer gtimer;
 
 bool HasSurvived(Cell cell) {
 	Vector2D midpoint = Vector2D(Utils::GlobalConfig.sizeX / 2, Utils::GlobalConfig.sizeY / 2);
-	return std::sqrt((std::abs(midpoint.x - cell.pos.x) ^ 2) + (std::abs(midpoint.y - cell.pos.y) ^ 2)) < 50;
+	return std::sqrt((std::abs(midpoint.x - cell.pos.x) ^ 2) + (std::abs(midpoint.y - cell.pos.y) ^ 2)) < 5;
 
 
 // TEST REQUIREMENT: BE OVER HALFWAY X
@@ -42,6 +42,10 @@ void NewGeneration(std::vector<NeuralNet::Genome> survivorsGenomes, bool initGen
 
 	gtimer = Debug::Timer();
 	Utils::GlobalSimData.renderGen = Utils::GlobalSimData.currentGen % Utils::GlobalConfig.gensBetweenRender == 0;
+
+	if (Utils::GlobalSimData.renderGen) {
+		LOG_INFO("Rendering Generation {0}...", Utils::GlobalSimData.currentGen);
+	}
 }
 
 void EndGeneration() {
@@ -68,7 +72,13 @@ void EndGeneration() {
 
 	Utils::GlobalSimData.currentGen++;
 	Utils::GlobalSimData.currentStep = 0;
-	LOG_INFO("Simulated Generation {0} in {1}s", Utils::GlobalSimData.currentGen, gtimer.Elapsed());
+	if (Utils::GlobalSimData.renderGen) {
+		LOG_INFO("Generation[{0}]: {1}/{2} survived (Rendering took {3}s)", Utils::GlobalSimData.currentGen - 1, survivingGenomes.size(), Utils::GlobalConfig.population, gtimer.Elapsed());
+	}
+	else {
+		LOG_INFO("Generation[{0}]: {1}/{2} survived (Simulation took {3}s)", Utils::GlobalSimData.currentGen - 1, survivingGenomes.size(), Utils::GlobalConfig.population, gtimer.Elapsed());
+	}
+
 
 	if (Utils::GlobalSimData.renderGen) {
 		ProduceVideo(Utils::GlobalSimData.currentGen - 1, Utils::GlobalConfig.framerate);
@@ -110,7 +120,7 @@ void SimulationStep(sf::RenderTexture& texture) {
 	threads.clear();*/
 
 	if (Utils::GlobalSimData.renderGen) {
-		RenderFrame(texture, Utils::GlobalSimData.currentGen, Utils::GlobalSimData.currentStep);
+		RenderFrame(texture, Utils::GlobalSimData.currentGen, Utils::GlobalSimData.currentStep, &HasSurvived);
 	}
 
 	if (Utils::GlobalSimData.currentStep >= Utils::GlobalConfig.stepsPerGen) {

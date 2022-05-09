@@ -1,6 +1,6 @@
 #include "Output.h"
 
-void RenderFrame(sf::RenderTexture& texture, uint16_t gen, int frame) {
+void RenderFrame(sf::RenderTexture& texture, uint16_t gen, int frame, bool(*survived)(Cell)) {
     Debug::Timer frametmr;
 
     texture.clear();
@@ -8,6 +8,10 @@ void RenderFrame(sf::RenderTexture& texture, uint16_t gen, int frame) {
     for (int c = 0; c < Globals::GlobalGrid.cells.size(); c++) {
         if (Globals::GlobalGrid.cells[c] == nullptr) { continue; }
         sf::CircleShape shape(Utils::GlobalConfig.tileSize / 2);
+        if (survived(*Globals::GlobalGrid.cells[c])) {
+            shape.setFillColor(sf::Color::Green);
+            shape.setOutlineThickness(0);
+        }
         Vector2D pos = Globals::GlobalGrid.cells[c]->pos * Utils::GlobalConfig.tileSize;
         shape.setPosition(sf::Vector2f(pos.x, pos.y));
         texture.draw(shape);

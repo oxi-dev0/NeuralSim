@@ -23,71 +23,71 @@ void ProcessEffectorQueue(int owner) {
 		float totalX = 0;
 		float totalY = 0;
 
-		switch (action->action) {
+		switch (action.action) {
 		case NeuralNet::Effector::MOVE_X:
 		{
 			Vector2D mov = Vector2D(1, 0);
-			if (action->amnt < 0) {
+			if (action.amnt < 0) {
 				mov = mov * -1;
 			}
-			totalX = totalX + (((float)mov.x) * action->amnt);
-			totalY = totalY + (((float)mov.y) * action->amnt);
+			totalX = totalX + (((float)mov.x) * action.amnt);
+			totalY = totalY + (((float)mov.y) * action.amnt);
 		} break;
 
 		case NeuralNet::Effector::MOVE_Y:
 		{
 			Vector2D mov = Vector2D(0, 1);
-			if (action->amnt < 0) {
+			if (action.amnt < 0) {
 				mov = mov * -1;
 			}
-			totalX = totalX + (((float)mov.x) * action->amnt);
-			totalY = totalY + (((float)mov.y) * action->amnt);
+			totalX = totalX + (((float)mov.x) * action.amnt);
+			totalY = totalY + (((float)mov.y) * action.amnt);
 		} break;
 		 
 		case NeuralNet::Effector::MOVE_FB:
 		{
 			Vector2D mov = cell->dir.asNormalisedVect();
-			if (action->amnt < 0) {
+			if (action.amnt < 0) {
 				mov = mov * -1;
 			}
-			totalX = totalX + (((float)mov.x) * action->amnt);
-			totalY = totalY + (((float)mov.y) * action->amnt);
+			totalX = totalX + (((float)mov.x) * action.amnt);
+			totalY = totalY + (((float)mov.y) * action.amnt);
 		} break;
 
 		case NeuralNet::Effector::MOVE_LR:
 		{
 			Vector2D mov = cell->dir.rotate(-2).asNormalisedVect();
-			if (action->amnt < 0) {
+			if (action.amnt < 0) {
 				mov = mov * -1;
 			}
-			totalX = totalX + (((float)mov.x) * action->amnt);
-			totalY = totalY + (((float)mov.y) * action->amnt);
+			totalX = totalX + (((float)mov.x) * action.amnt);
+			totalY = totalY + (((float)mov.y) * action.amnt);
 		} break;
 
 		case NeuralNet::Effector::MOVE_RANDOM:
 		{
-			totalX = totalX + (((float)rdir.x) * action->amnt);
-			totalY = totalY + (((float)rdir.y) * action->amnt);
+			totalX = totalX + (((float)rdir.x) * action.amnt);
+			totalY = totalY + (((float)rdir.y) * action.amnt);
 		} break;
 
 		case NeuralNet::Effector::MOVE_NORTH:
 		{
-			totalY = totalY + (-1 * action->amnt);
+			totalY = totalY + (-1 * action.amnt);
 		} break;
 
 		case NeuralNet::Effector::MOVE_SOUTH:
 		{
-			totalY = totalY + (1 * action->amnt);
+			totalY = totalY + (1 * action.amnt);
 		} break;
 
 		case NeuralNet::Effector::MOVE_EAST:
 		{
-			totalX = totalX + (1 * action->amnt);
+			totalX = totalX + (1 * action.amnt);
 		} break;
 
 		case NeuralNet::Effector::MOVE_WEST:
 		{
-			totalX = totalX + (-1 * action->amnt);
+			totalX = totalX + (-1 * action.amnt);
 		} break;
 
 		}

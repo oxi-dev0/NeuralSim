@@ -63,6 +63,6 @@ namespace NeuralNet {
 		NeuronNode() { type = NeuronType::EFFECTOR; id = -1; receptorType = Receptor::RECEPTORCOUNT; effectorType = Effector::ACTIONCOUNT; }
 		NeuronNode(NeuronType type_, int id_, Receptor receptorType_, Effector effectorType_) { type = type_; receptorType = receptorType_; id = id_; effectorType = effectorType_; }
 
-		float eval(std::vector<std::shared_ptr<NeuronNode>> Nodes, std::unordered_map<int, float>* vals, std::unordered_map<int, float>* prevVals);
+		float eval(const std::vector<std::shared_ptr<NeuronNode>> Nodes, std::unordered_map<int, float>* vals, std::unordered_map<int, float>* prevVals, std::vector<int> visited);
 	};
 }

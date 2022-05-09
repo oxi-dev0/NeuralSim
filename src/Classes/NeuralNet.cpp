@@ -74,14 +74,15 @@ namespace NeuralNet {
 				continue;
 			}
 
-			float val = Node->eval(Nodes, vals, prevVals);
+			std::vector<int> visitedChain; // this is used to prevent infinite loops when evaluating the map
+			float val = Node->eval(Nodes, vals, prevVals, visitedChain);
 			vals->operator[](Node->id) = val;
 
 			if (Queues::EffectorQueue.find(owner) != Queues::EffectorQueue.end()) {
-				Queues::EffectorQueue[owner].push_back(std::shared_ptr<Queues::ActionEvent>(new Queues::ActionEvent(Node->effectorType, val)));
+				Queues::EffectorQueue[owner].push_back(Queues::ActionEvent(Node->effectorType, val));
 			}
 			else {
-				Queues::EffectorQueue[owner] = std::vector<std::shared_ptr<Queues::ActionEvent>>({ std::shared_ptr<Queues::ActionEvent>(new Queues::ActionEvent(Node->effectorType, val)) });
+				Queues::EffectorQueue.insert(std::make_pair(owner, std::vector<Queues::ActionEvent>({ Queues::ActionEvent(Node->effectorType, val) })));
 			}
 		}
 	}

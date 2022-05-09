@@ -15,6 +15,6 @@ namespace Queues {
 		}
 	};
 
-	extern std::unordered_map<int, std::vector<std::shared_ptr<ActionEvent>>> EffectorQueue;
+	extern std::unordered_map<int, std::vector<ActionEvent>> EffectorQueue;
 	extern void Init();
 }

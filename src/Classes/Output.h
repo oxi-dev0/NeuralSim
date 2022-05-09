@@ -19,7 +19,7 @@
 
 #include <fstream>
 
-extern void RenderFrame(sf::RenderTexture& texture, uint16_t gen, int frame);
+extern void RenderFrame(sf::RenderTexture& texture, uint16_t gen, int frame, bool(*survived)(Cell));
 extern void ProduceVideo(uint16_t gen, std::string fps);
 
 extern void ExportNeuralMap(std::shared_ptr<NeuralNet::NeuralMap> map);

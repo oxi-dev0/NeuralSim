@@ -11,7 +11,7 @@ public:
 	Vector2D pos; // Pos in grid[][]
 	Dir dir;
 	int id;
-	int oscPeriod;
+	int oscPeriod = 34;
 	bool dead;
 	NeuralNet::Genome genome;
 

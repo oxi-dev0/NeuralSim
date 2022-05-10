@@ -60,6 +60,7 @@
 | `-v [*.nm]` | Visualise mode |
 |  |
 | `-c [*.ini]` | Specify configuration file **[DEFAULT: `config/config.ini`]** |
+| `-k [int]` | Set the Fruchterman-Reingold constant **[DEFAULT: 400]** |
 
 <br>
 

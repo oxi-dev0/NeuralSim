@@ -302,7 +302,7 @@ namespace Visualisation {
 					sf::CircleShape refCircle(radius);
 
 					float weightF = weightI / 8192.0f;
-					float width = 6 + 0.7 * weightF;
+					float width = 3 + 1.5 * std::abs(weightF);
 					width *= 2;
 
 					refCircle.setFillColor(sf::Color::Transparent);
@@ -334,7 +334,7 @@ namespace Visualisation {
 				sf::Vector2f bendPos = mid + (bendDir * bendStrength);
 
 				float weightF = weightI / 8192.0f;
-				float width = 6 + (0.7 * weightF);
+				float width = 3 + (1.5 * std::abs(weightF));
 				sf::Color lineCol = weightF > 0 ? sf::Color::Green : sf::Color::Red;
 
 				std::vector<sf::Vector2f> curvedPoints = CurvedLine(texture, width, lineCol, pos1, bendPos, pos2);

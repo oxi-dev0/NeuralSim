@@ -26,6 +26,16 @@
 - [ ] Survival Condition Language
 - [ ] Simulation of custom Neural Maps
 
+<h3> Dependencies </h3>
+<h6> Note: These are all included in the repo, and all (apart from FFMPEG) are statically linked into the program </h6>
+
+- [Premake](https://github.com/premake/premake-core) - VS Project Generation
+- [SFML](https://github.com/SFML/SFML) - Window/Image Rendering
+- [FFMPEG](https://github.com/FFmpeg/FFmpeg) - Video Rendering
+- [mINI](https://github.com/pulzed/mINI) - INI Config Reading
+- [nodesoup](https://github.com/olvb/nodesoup) - Fruchterman-Reingold graph positioning
+- [spdlog](https://github.com/gabime/spdlog) - Output logging
+
 <br>
 
 <h2> Program Usage </h2>

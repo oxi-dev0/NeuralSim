@@ -74,7 +74,7 @@
 <br>
 
 <h3> Brief Documentation </h3>
-<h6> This documentation will be expanded in the future, and I may make a youtube video explaining how the simulator and visualiser works (as in more technical / code orientated detail than David Miller's video)</h6>
+<h6> This documentation will be expanded in the future, and I may make a youtube video explaining how the simulator and visualiser works (as in more technical / code orientated detail than [https://www.youtube.com/watch?v=N3tRFayqVtk](David Miller's video))</h6>
 <h5> Survival Condition </h5>
 
 The survival condition is currently determined using `bool HasSurvived(Cell cell)` in `src/Classes/Generation.cpp`. This function is also used to colour the cells in the mp4 generation render (`Output.cpp` - `RenderFrame()`).

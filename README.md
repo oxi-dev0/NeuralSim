@@ -63,6 +63,7 @@
 <br>
 
 <h3> Brief Documentation </h3>
+<h6> This documentation will be expanded in the future, and I may make a youtube video explaining how the simulator and visualiser works </h6>
 <h5> Survival Condition </h5>
 
 The survival condition is currently determined using `bool HasSurvived(Cell cell)` in `src/Classes/Generation.cpp`. This function is also used to colour the cells in the mp4 generation render (`Output.cpp` - `RenderFrame()`).
@@ -95,3 +96,11 @@ Effector name strings are defined in `effectorName(Effector effector)` in `src/C
 <p> Most help is needed with optimisation, as I only have ~1 years experience with C++, and there will be many slow operations and calls that I wrote without realising how slow they are. I also dont have much time to work on the program, so any expansion with new receptors, effectors, etc is greatly appreciated :D </p>
 
 <br>
+
+<h3> Screenshots </h3>
+<h4> 10,000 Gen Simulation with it's Neural Map Visualisation </h4>
+<p float="left">
+<img src="https://user-images.githubusercontent.com/33568643/167692593-8c4ff5fb-fc6c-4a88-b18e-16d1a6c4013d.png" height="400">
+<img src="https://user-images.githubusercontent.com/33568643/167692784-acd1fe3a-903b-4052-99f3-e622ca998cca.png" height="400">
+    </p>
+

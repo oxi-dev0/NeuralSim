@@ -5,6 +5,30 @@ namespace Visualisation {
 
 	const float  PI_F = 3.14159265358979f;
 
+	std::string shrtNodeToLong(std::string shrt) {
+		std::unordered_map<std::string, std::string> map = {
+			{"Lx", "Location X"},
+			{"Ly", "Location Y"},
+			{"RND", "Random"},
+			{"AGE", "Age"},
+			{"OSC", "Oscillator"},
+
+			{"Mx", "Move X"},
+			{"My", "Move Y"},
+			{"Mfb", "Move Forwards/Backwards"},
+			{"Mlr", "Move Left/Right"},
+			{"Mrn", "Move Random"},
+			{"McN", "Move North"},
+			{"McE", "Move East"},
+			{"McS", "Move South"},
+			{"McW", "Move West"}
+		};
+
+		if (map.find(shrt) == map.end()) { return ""; }
+
+		return map[shrt];
+	}
+
 	std::vector<std::string> split(const std::string& s, char seperator)
 	{
 		std::vector<std::string> output;
@@ -169,30 +193,6 @@ namespace Visualisation {
 	sf::Vector2f VectorLerp(sf::Vector2f a, sf::Vector2f b, float t) {
 		//return (1 - t) * v0 + t * v1;
 		return (1 - t) * a + t * b;
-	}
-
-	std::string shrtNodeToLong(std::string shrt) {
-		std::unordered_map<std::string, std::string> map = {
-			{"Lx", "Locaton X"},
-			{"Ly", "Location Y"},
-			{"RND", "Random"},
-			{"AGE", "Age"},
-			{"OSC", "Oscillator"},
-
-			{"Mx", "Move X"},
-			{"My", "Move Y"},
-			{"Mfb", "Move Forwards/Backwards"},
-			{"Mlr", "Move Left/Right"},
-			{"Mrn", "Move Random"},
-			{"McN", "Move North"},
-			{"McE", "Move East"},
-			{"McS", "Move South"},
-			{"McW", "Move West"}
-		};
-
-		if (map.find(shrt) == map.end()) { return ""; }
-		
-		return map[shrt];
 	}
 
 	std::vector<nodesoup::Point2D> RenderNeuralMap(sf::RenderTexture& texture, Edges edges, sf::Vector2f mousePos, std::vector<nodesoup::Point2D> positionsCache) {

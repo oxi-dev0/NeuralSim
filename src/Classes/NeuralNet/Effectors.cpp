@@ -16,9 +16,11 @@ void ProcessEffectorQueue(int owner) {
 
 		if (cell == nullptr) { continue; }
 
+		// MISC ACTIONS
+
 
 		// MOVEMENT ACTIONS
-		// Sum up all wanted movements
+		// Sum up all wanted movements then use tanh(totalMovement) as probability
 		Vector2D rdir = RandomDir();
 		float totalX = 0;
 		float totalY = 0;

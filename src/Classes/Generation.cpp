@@ -3,12 +3,13 @@
 Debug::Timer gtimer;
 
 bool HasSurvived(Cell cell) {
+	// BE IN CENTER CIRCLE
 	Vector2D midpoint = Vector2D(Utils::GlobalConfig.sizeX / 2, Utils::GlobalConfig.sizeY / 2);
 	return std::sqrt((std::abs(midpoint.x - cell.pos.x) ^ 2) + (std::abs(midpoint.y - cell.pos.y) ^ 2)) < 5;
 
 
-// TEST REQUIREMENT: BE OVER HALFWAY X
-return cell.pos.x > Utils::GlobalConfig.sizeX / 2;
+	// TEST REQUIREMENT: BE OVER HALFWAY X
+	// return cell.pos.x > Utils::GlobalConfig.sizeX / 2;
 }
 
 void NewGeneration(std::vector<NeuralNet::Genome> survivorsGenomes, bool initGen) {

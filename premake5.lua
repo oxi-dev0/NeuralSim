@@ -1,4 +1,4 @@
-workspace "BioSim"
+workspace "NeuralSim"
 	architecture "x64"
 
 	configurations 
@@ -10,7 +10,7 @@ workspace "BioSim"
 
 outputdir = "%{cfg.buildcfg}-%{cfg.system}-%{cfg.architecture}"
 
-project "BioSim"
+project "NeuralSim"
 	kind "ConsoleApp"
 	language "C++"
 

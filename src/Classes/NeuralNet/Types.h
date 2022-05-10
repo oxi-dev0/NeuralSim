@@ -17,7 +17,7 @@ namespace NeuralNet {
 		RANDOM,
 		AGE,
 		OSC,
-		RECEPTORCOUNT
+		RECEPTORCOUNT // Used to determine the total amount of receptors. Add new receptors before this
 	};
 
 	enum Effector {
@@ -30,7 +30,7 @@ namespace NeuralNet {
 		MOVE_EAST,
 		MOVE_SOUTH,
 		MOVE_WEST,
-		ACTIONCOUNT
+		ACTIONCOUNT // Used to determine the total amount of effector. Add new effectors before this
 	};
 
 	class Gene {

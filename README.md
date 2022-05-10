@@ -1,53 +1,97 @@
 <h1 align="center"> NEUROSIM </h2>
 <p align="center">
     <a href="#">
-        <img src="https://img.shields.io/github/repo-size/oxi-dev0/UE4-BP2CPP" alt="Repo Size">
+        <img src="https://img.shields.io/github/repo-size/oxi-dev0/NeuroSim" alt="Repo Size">
     </a>
     <a href="#">
-        <img src="https://img.shields.io/github/stars/oxi-dev0/UE4-BP2CPP" alt="Stars">
+        <img src="https://img.shields.io/github/stars/oxi-dev0/NeuroSim" alt="Stars">
     </a>
     <a href="#">
-        <img src="https://img.shields.io/github/forks/oxi-dev0/UE4-BP2CPP" alt="Forks">
+        <img src="https://img.shields.io/github/forks/oxi-dev0/NeuroSim" alt="Forks">
     </a>
     <a href="#">
-        <img src="https://img.shields.io/github/watchers/oxi-dev0/UE4-BP2CPP" alt="Watchers">
+        <img src="https://img.shields.io/github/watchers/oxi-dev0/NeuroSim" alt="Watchers">
     </a>
 </p>
 
-<h3 align="center"> A script to convert Unreal Engine's Blueprints to C++. </h3>
-<h4 align="center"> My goal is to generate readable and editable code that can be changed after the conversion, compared to UE4's Nativisation Conversion, which is not very readable. </h4>
-<h6 align="center"> Please Note: This is not finished. Check <a href="#-current-state-">here</a> to see its current state. </h1>
+<h3 align="center"> A C++ neural evolution simulator </h3>
+<h4 align="center"> This program simulates neural evolution over generations through the goal of survival. </h4>
+<h6 align="center"> Please Note: This was inspired by <a href='https://github.com/davidrmiller/biosim4'>David R. Miller's simulator</a>, and is just a quick project i wanted to write; It does not have very optimised / clean code. </h1>
 <br>
 
-<h3> About </h3>
-<p>BP-2-CPP is a script to convert Blueprints into C++. It is meant to make a tedious task a little easier. It is not a perfect solution (it is not even finished yet) and will always have edge cases.</p>
+<h3> Features </h3>
 
-<h3> Prerequisites </h3>
-<p>Your project must already be a C++ project, and you must general knowledge of C++ and UE4. You will be required to compile the module once the classes have been generated, and there may be issues due to the way the code is generated.</p>
+- [x] Generational Simulator
+- [x] Neural Map Viewer / Visualiser
+- [ ] Survival Condition Language
+- [ ] Simulation of custom Neural Maps
 
 <br>
 
-<h2> Documentation </h2>
+<h2> Program Usage </h2>
+<h6> A compiled version of the program can be found in bin/Release-windows-x86_64/ </h6>
 
-<h3> Usage </h4>
+<h3> Simulation </h3>
 
-1. First, you need to export the blueprint to a .COPY file. Right click on the asset and go to `Asset Actions > Export...` and save it wherever you like.
-2. Next, Run `BP2C++.py`. When prompted, pass in the .COPY file.
-3. It should then ask you for your Project's API. This is generated when you convert your project to a C++ project, and typically follows this structure: `[PROJECTNAME]_API`.
-4. After these fields have been provided correctly, the script will generate a .h and .cpp file in the directory `[BPNAME]/`. Please place these correctly within your projects source folder, then compile. If the script has worked correctly, you should then be able to move all your references to the new class.
+1. Edit `config/config.ini` in the program directory to change the simulation parameters
+2. Run `BioSim.exe`, optionally with the argument `-c [.INI FILE]`
+
+<h3> Neural Map Visualisation </h3>
+
+1. Run `BioSim.exe` with the argument `-v [.NM FILE]`
+
+<h3> Command Line Arguments </h3>
+
+| Argument | Description |
+| --- | --- |
+| `-h` | Outputs program usage  |
+|  |
+| `-s` | Simulate mode **[DEFAULT]** |
+| `-v [*.nm]` | Visualise mode |
+|  |
+| `-c [*.ini]` | Specify configuration file **[DEFAULT: `config/config.ini`]** |
+
 <br>
+
+<h2> Source </h2>
+<h6> Note: You must have VS2022 installed to build from source </h6>
+
+<h3> Project Setup </h4>
+
+1. Run `GenerateScripts.bat` to use premake to generate the Visual Studio 2022 project files
+2. Open NeuralSim.sln
+<br>
+
+<h3> Brief Documentation </h3>
+<h5> Survival Condition </h5>
+
+The survival condition is currently determined using `bool HasSurvived(Cell cell)` in `src/Classes/Generation.cpp`. This function is also used to colour the cells in the mp4 generation render (`Output.cpp` - `RenderFrame()`).
+In the future, this will be expanded to use a custom programming language that can be written/generated and specified by the program user.
+
+<h5> Receptors </h5>
+
+Receptors are defined in a `Receptor` enum in `src/Classes/NeuralMap/Types.h`  
+Receptor behaviour is defined in `Cell::GetReceptorVal(NeuralNet::Receptor receptor)` in `src/Classes/NeuralMap/Receptors.cpp`  
+Receptor name strings are defined in `receptorName(Receptor receptor)` in `src/Classes/NeuralMap/DebugTypes.cpp`  
+
+<h5> Effectors </h5>
+
+Effectors are defined in an `Effector` enum in `src/Classes/NeuralMap/Types.h`  
+Effector behaviour is defined in `ProcessEffectorQueue(int owner)` in `src/Classes/NeuralMap/Effectors.cpp`  
+Effector name strings are defined in `effectorName(Effector effector)` in `src/Classes/NeuralMap/DebugTypes.cpp`  
+
+###### The Visualiser long name strings are defined in `shrtNodeToLong(std::string shrt)` in `src/Visualise/Visualise.cpp`  
+
+<br>
+
 <h3> Current State </h3>
 
-<p><b>BP-2-CPP is extremely early on. I only started development on it a couple days ago, and currently it can only generate Variable Definitions, with meta data and uproperty params. Eventually, it will be able to generate actual c++ code by tracing along the BP connection paths, using data from the .COPY file. Im not fully sure if I will ever finish this, but I have made a lot of progress, and I hope that it is actually possible. </b></p>
+<p> The main simulator and visualiser is finished. What's mostly needed is optimisation, and a couple other features that make the program more fun to play around with. </p>
 
 <br>
+
 <h3> Contribution </h3>
 
-<p>BP-2-CPP is still in its early stages, and so more help is needed around parsing the .COPY files to find more data such as variable defaults. Also, I am somewhat new to C++ - around 3-4 months or so - and I do not know all of the specifics, so if any of the code is set to generate wrong, please correct it, and pull request it.</p>
-<br>
-<p>One thing I do need help on is getting variable types from classes, as .COPY files specify variable types as, for example `VarType=(PinCategory="struct",PinSubCategoryObject=ScriptStruct'"/Script/CoreUObject.Vector"')`, and I do not know how to get the actual c++ class - FVector - from this reference. Thankyou to anyone that helps :)</p>
+<p> Most help is needed with optimisation, as I only have ~1 years experience with C++, and there will be many slow operations and calls that I wrote without realising how slow they are. I also dont have much time to work on the program, so any expansion with new receptors, effectors, etc is greatly appreciated :D </p>
 
 <br>
-<h3> Footnotes </h3>
-
-<p>The documentation will be expanded as I continue to work on the script :D</p>

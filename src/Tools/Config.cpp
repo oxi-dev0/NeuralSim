@@ -30,7 +30,8 @@ namespace Tools {
 			{ "simulate", false },
 			{ "visualise", true },
 			{ "config", true },
-			{ "kconst", true }
+			{ "kconst", true },
+			{ "sc", true }
 		};
 
 		std::unordered_map<std::string, std::string> map;
@@ -79,7 +80,7 @@ namespace Tools {
 		std::unordered_map<std::string, std::string> map = ArgvLongPairs(argc, argv);
 
 		std::string configFile = "config/config.ini";
-		std::string survivalFile = "config/survival.sv";
+		std::string survivalFile = "config/survival.shape";
 		std::string nmFile = "";
 		int kconst = 400;
 
@@ -96,7 +97,7 @@ namespace Tools {
 		}
 
 		if (nmFile != "") {
-			return Config(1000, 1000, 1, 0, 0, 0, 0, 0, 0, "", nmFile, kconst, "");
+			return Config(1000, 1000, 1, 0, 0, 0, 0, 0, 0, "", nmFile, kconst, "config/survival.shape");
 		}
 		
 		newConfig.survivalconfigfile = survivalFile;

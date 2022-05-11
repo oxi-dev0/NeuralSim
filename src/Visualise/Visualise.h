@@ -18,7 +18,7 @@ namespace Visualisation {
 
 	extern std::string shrtNodeToLong(std::string shrt);
 
-	typedef std::tuple<int, int> Connection;
+	typedef std::tuple<int, int> Connection; // REF, WEIGHT
 
 	struct Rect {
 		float left;

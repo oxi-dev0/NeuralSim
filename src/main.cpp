@@ -16,7 +16,6 @@
 #include "Classes/Utils.h"
 #include "Classes/Globals.h"
 #include "Classes/Generation.h"
-#include "Classes/Survival.h"
 
 #include "Classes/Output.h"
 
@@ -24,19 +23,6 @@
 
 #define _SILENCE_ALL_CXX17_DEPRECATION_WARNINGS
 #define _SILENCE_CXX17_CODECVT_HEADER_DEPRECATION_WARNING
-
-class LifetimeHandler {
-public:
-    Debug::Timer lifeTimer;
-
-    LifetimeHandler() {
-        lifeTimer = Debug::Timer();
-    }
-
-    ~LifetimeHandler() {
-        LOG_INFO("Simulation lasted {0}s", lifeTimer.Elapsed());
-    }
-};
 
 void usage(char* progName)
 {
@@ -48,12 +34,11 @@ void usage(char* progName)
         "-v   | --visualise       [*.nm]        Visualise an exported neural map file" << std::endl <<
         "[OTHER]" << std::endl <<
         "-c   | --config          [*.ini]       Specify the simulation configuration file [DEFAULT: config/config.ini]" << std::endl <<
-        "-sc  | --survival        [*.sv]        Specify the survival condition configuration file [DEFAULT: config/survival.sv]"
+        "-sc  | --survival        [*.shape]     Specify the survival shape file [DEFAULT: config/survival.shape]" << std::endl <<
         "-k   | --kconst          [int]         Set the Fruchterman-Reingold constant [DEFAULT: 400]" << std::endl;
 }
 
 void sim(sf::RenderTexture& texture) {
-    LifetimeHandler lh = LifetimeHandler();
     NewGeneration(std::vector<NeuralNet::Genome>(), true);
     while (true) {
         SimulationStep(texture);
@@ -83,8 +68,8 @@ int main(int argc, char** argv)
     LOG_INFO("Initialised Arguments, Utils and Globals in {0}s", inittmr.Elapsed());
 
     Debug::Timer parseTimer;
-    Survival::ParseSurvivalFile(Utils::GlobalConfig.survivalconfigfile);
-    LOG_INFO("Parsed survival config file in {0}s", parseTimer.Elapsed());
+    Shapes::SurvivalConfig = Shapes::ParseShapeFile(Utils::GlobalConfig.survivalconfigfile);
+    LOG_INFO("Parsed survival shape file in {0}s", parseTimer.Elapsed());
 
     sf::ContextSettings settings;
     settings.antialiasingLevel = 8;

@@ -1,0 +1,9 @@
+~ Will switch to rectangle after generation 500
+IF {GEN} >= 500
+  RECT 64 128 0 128	~ Right side box
+ELSE
+  CIRCLE 64 64 25   	~ Center circle
+ENDIF
+
+~ Circle is always present in left corner (ENDIF clears the current condition)
+CIRCLE 0 128 25

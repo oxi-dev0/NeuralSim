@@ -9,8 +9,8 @@ bool HasSurvived(Cell cell) {
 
 	bool survived = false;
 	int c = 0;
-	for (auto circle : Survival::SurvivalConfig.survivalCircs) {
-		if (Survival::SurvivalConfig.evaluatedCircs[c]) {
+	for (auto circle : Shapes::SurvivalConfig.circles) {
+		if (Shapes::SurvivalConfig.evaluatedCircles[c]) {
 			// Shape passes config condition, use to determine survival
 			bool cellInside = std::sqrt(pow(std::abs(circle.pos.x - cell.pos.x), 2) + pow(std::abs(circle.pos.y - cell.pos.y), 2)) <= circle.radius;
 			survived = survived || cellInside;
@@ -18,8 +18,8 @@ bool HasSurvived(Cell cell) {
 		c++;
 	}
 	int r = 0;
-	for (auto rect : Survival::SurvivalConfig.survivalRects) {
-		if (Survival::SurvivalConfig.evaluatedRects[r]) {
+	for (auto rect : Shapes::SurvivalConfig.rects) {
+		if (Shapes::SurvivalConfig.evaluatedRects[r]) {
 			// Shape passes config condition, use to determine survival
 			bool cellInside = (cell.pos.x >= rect.left) && (cell.pos.x <= rect.right) && (cell.pos.y >= rect.top) && (cell.pos.y <= rect.bottom);
 			survived = survived || cellInside;
@@ -111,7 +111,7 @@ void SimulationStep(sf::RenderTexture& texture) {
 	Utils::GlobalSimData.currentStep++;
 
 	// Evaluate the survival shape conditions
-	Survival::SurvivalConfig.EvaluateShapes();
+	Shapes::SurvivalConfig.EvaluateShapes();
 
 	// Threads could be slowing this down when population rises
 	std::vector<std::thread> threads;

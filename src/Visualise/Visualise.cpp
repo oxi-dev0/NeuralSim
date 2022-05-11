@@ -195,7 +195,49 @@ namespace Visualisation {
 		return (1 - t) * a + t * b;
 	}
 
-	std::vector<nodesoup::Point2D> RenderNeuralMap(sf::RenderTexture& texture, Edges edges, sf::Vector2f mousePos, std::vector<nodesoup::Point2D> positionsCache) {
+	std::vector<int> GenerateNodeChain(Edges edges, int currentNodeI, std::vector<int>& visited) {
+		auto nodes = std::get<1>(edges);
+
+		auto currentNode = nodes[currentNodeI];
+		if (std::find(visited.begin(), visited.end(), currentNodeI) != visited.end()) {
+			return std::vector<int>({});
+		} 
+
+		auto backConnections = currentNode.connections;
+		auto nodeChain = std::vector<int>({currentNodeI});
+
+		visited.push_back(currentNodeI);
+
+		for (auto& connection : backConnections) {
+			auto newChain = GenerateNodeChain(edges, std::get<0>(connection), visited);
+			nodeChain.insert(nodeChain.end(), newChain.begin(), newChain.end());
+		}
+
+		return nodeChain;
+	}
+
+	int GetClosestNode(std::vector<nodesoup::Point2D> positionsCache, sf::Vector2f target, int range) {
+		int closestI = -1;
+		float closestD = 100000;
+
+		int i = 0;
+		for (auto pos : positionsCache) {
+			float d = std::sqrt(pow(std::abs(pos.x - target.x), 2) + pow(std::abs(pos.y - target.y), 2));
+			if (d < closestD) {
+				closestD = d;
+				closestI = i;
+			}
+			i++;
+		}
+
+		if (closestD > range) {
+			return -1;
+		}
+
+		return closestI;
+	}
+
+	std::vector<nodesoup::Point2D> RenderNeuralMap(sf::RenderTexture& texture, Edges edges, sf::Vector2f mousePos, std::vector<nodesoup::Point2D> positionsCache, std::vector<int> nodeChain) {
 		auto g = std::get<0>(edges);
 		auto nodes = std::get<1>(edges);
 
@@ -247,6 +289,13 @@ namespace Visualisation {
 			if (type == "r") { nodeCol = sf::Color::Color(52, 235, 204); }
 			if (type == "i") { nodeCol = sf::Color::Color(176, 176, 176); }
 			if (type == "e") { nodeCol = sf::Color::Color(255, 120, 196); }
+
+			if (nodeChain.size() > 0) {
+				if (std::find(nodeChain.begin(), nodeChain.end(), nodeId) == nodeChain.end()) {
+					// This node is not in node chain
+					nodeCol = sf::Color(100, 100, 100);
+				}
+			}
 
 			nodeCirc.setFillColor(nodeCol);
 			nodeCirc.setOutlineThickness(1);
@@ -311,6 +360,14 @@ namespace Visualisation {
 					refCircle.setOutlineColor(lineCol);
 					refCircle.setPosition(center - sf::Vector2f(radius, radius));
 
+					if (nodeChain.size() > 0) {
+						if (std::find(nodeChain.begin(), nodeChain.end(), nodeId) == nodeChain.end()) {
+							// This connection is not in node chain
+							lineCol = sf::Color(100, 100, 100);
+							refCircle.setOutlineColor(lineCol);
+						}
+					}
+
 					texture.draw(refCircle);
 
 					sf::Vector2f arrowPoint = CircleIntersection(sf::Vector2f(positions[nodeId].x, positions[nodeId].y), noderadius, center, radius);
@@ -336,6 +393,13 @@ namespace Visualisation {
 				float weightF = weightI / 8192.0f;
 				float width = 3 + (1.5 * std::abs(weightF));
 				sf::Color lineCol = weightF > 0 ? sf::Color::Green : sf::Color::Red;
+
+				if (nodeChain.size() > 0) {
+					if (std::find(nodeChain.begin(), nodeChain.end(), refId) == nodeChain.end()) {
+						// This connection is not in node chain
+						lineCol = sf::Color(100, 100, 100);
+					}
+				}
 
 				std::vector<sf::Vector2f> curvedPoints = CurvedLine(texture, width, lineCol, pos1, bendPos, pos2);
 
@@ -437,13 +501,23 @@ namespace Visualisation {
 		return positions;
 	}
 
+	int CountVisualNodes(std::vector<VisualNode> nodes) {
+		int count = 0;
+		for (auto& node : nodes) {
+			if (node.connections.size() > 0 || node.forwardCons.size() > 0) {
+				count++;
+			}
+		}
+		return count;
+	}
+
 	void VisualiseNeuralMap(sf::RenderTexture& texture, std::string file) {
 		if (!std::filesystem::exists(file)) { LOG_CRITICAL("Could not open the neural map file"); return; }
 
 		Edges edges = FormMapEdges(file);
 
 		std::stringstream windowTss;
-		windowTss << "Visualisation: " << file << "; " << std::get<0>(edges).size() << " Nodes";
+		windowTss << "Visualisation: " << file << "; " << CountVisualNodes(std::get<1>(edges)) << " Nodes";
 		std::string windowT(windowTss.str());
 
 		sf::RenderWindow window(sf::VideoMode(texture.getSize().x, texture.getSize().y), windowT);
@@ -456,9 +530,12 @@ namespace Visualisation {
 		float zoom = 1;
 
 		std::vector<nodesoup::Point2D> posCache;
+		std::vector<int> nodeChain;
 
 		while (window.isOpen())
 		{
+			sf::Vector2f mousePos = texture.mapPixelToCoords(sf::Mouse::getPosition(window));// -sf::Vector2f(windowPos.x, windowPos.y);
+
 			// check all the window's events that were triggered since the last iteration of the loop
 			sf::Event event;
 			while (window.pollEvent(event))
@@ -480,9 +557,19 @@ namespace Visualisation {
 				}
 						break;
 				case sf::Event::MouseButtonPressed:
-					if (event.mouseButton.button == 0) {
+					if (event.mouseButton.button == sf::Mouse::Button::Left) {
 						moving = true;
 						oldPos = texture.mapPixelToCoords(sf::Vector2i(event.mouseButton.x, event.mouseButton.y));
+					}
+					else if (event.mouseButton.button == sf::Mouse::Button::Right) {
+						int node = GetClosestNode(posCache, mousePos, 100);
+						if (node == -1) {
+							nodeChain.clear();
+						}
+						else {
+							std::vector<int> visited;
+							nodeChain = GenerateNodeChain(edges, node, visited);
+						}
 					}
 					break;
 				case  sf::Event::MouseButtonReleased:
@@ -521,10 +608,9 @@ namespace Visualisation {
 			}
 
 			auto windowPos = window.getPosition();
-			sf::Vector2f mousePos = texture.mapPixelToCoords(sf::Mouse::getPosition(window));// -sf::Vector2f(windowPos.x, windowPos.y);
 
 			window.clear();
-			posCache = RenderNeuralMap(texture, edges, mousePos, posCache);
+			posCache = RenderNeuralMap(texture, edges, mousePos, posCache, nodeChain);
 			const sf::Texture& dt = texture.getTexture();
 			sf::Sprite sprite(dt);
 

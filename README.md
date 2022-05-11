@@ -44,7 +44,7 @@
 <h3> Simulation </h3>
 
 1. Edit `config/config.ini` in the program directory to change the simulation parameters
-2. Setup `config/survival.sv` in the program directory to have your [Survival Conditions](#-survival-conditions--shape-files-)
+2. Setup `config/survival.shape` in the program directory to configure the [Survival Conditions](#-survival-conditions--shape-files-)
 3. Run `BioSim.exe`, optionally with the argument `-c [.INI FILE]`
 
 <h3> Neural Map Visualisation </h3>

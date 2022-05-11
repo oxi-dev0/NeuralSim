@@ -88,7 +88,7 @@ Effector name strings are defined in `effectorName(Effector effector)` in `src/C
 
 ###### The Visualiser long name strings are defined in `shrtNodeToLong(std::string shrt)` in `src/Visualise/Visualise.cpp`
 
-> This section will be expanded along with comments in the program
+> This section will be expanded along with comments in the source
 
 <br>
 

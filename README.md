@@ -23,7 +23,7 @@
 
 - [x] Generational Simulator
 - [x] Neural Map Viewer / Visualiser
-- [ ] Survival Condition Language
+- [x] Survival Condition Language
 - [ ] Simulation of custom Neural Maps
 
 <h3> Dependencies </h3>
@@ -44,7 +44,8 @@
 <h3> Simulation </h3>
 
 1. Edit `config/config.ini` in the program directory to change the simulation parameters
-2. Run `BioSim.exe`, optionally with the argument `-c [.INI FILE]`
+2. Setup `config/survival.sv` in the program directory to have your [Survival Conditions](#survival-conditions)
+3. Run `BioSim.exe`, optionally with the argument `-c [.INI FILE]`
 
 <h3> Neural Map Visualisation </h3>
 
@@ -60,6 +61,7 @@
 | `-v [*.nm]` | Visualise mode |
 |  |
 | `-c [*.ini]` | Specify configuration file **[DEFAULT: `config/config.ini`]** |
+| `-sc [*.sv]` | Specify the survival condition configuration file **[DEFAULT: `config/survival.sv`]** |
 | `-k [int]` | Set the Fruchterman-Reingold constant **[DEFAULT: 400]** |
 
 <br>
@@ -71,44 +73,121 @@
 
 1. Run `GenerateScripts.bat` to use premake to generate the Visual Studio 2022 project files
 2. Open NeuralSim.sln
-<br>
 
-<h3> Brief Documentation </h3>
-<h6> This documentation will be expanded in the future, and I may make a youtube video explaining how the simulator and visualiser works (as in more technical / code orientated detail than <a href="https://www.youtube.com/watch?v=N3tRFayqVtk">David Miller's video</a>)</h6>
-<h5> Survival Condition </h5>
-
-The survival condition is currently determined using `bool HasSurvived(Cell cell)` in `src/Classes/Generation.cpp`. This function is also used to colour the cells in the mp4 generation render (`Output.cpp` - `RenderFrame()`).
-In the future, this will be expanded to use a custom programming language that can be written/generated and specified by the program user.
-
-<h5> Receptors </h5>
+<h3> Receptors </h3>
 
 Receptors are defined in a `Receptor` enum in `src/Classes/NeuralMap/Types.h`  
 Receptor behaviour is defined in `Cell::GetReceptorVal(NeuralNet::Receptor receptor)` in `src/Classes/NeuralMap/Receptors.cpp`  
 Receptor name strings are defined in `receptorName(Receptor receptor)` in `src/Classes/NeuralMap/DebugTypes.cpp`  
 
-<h5> Effectors </h5>
+<h3> Effectors </h3>
 
 Effectors are defined in an `Effector` enum in `src/Classes/NeuralMap/Types.h`  
 Effector behaviour is defined in `ProcessEffectorQueue(int owner)` in `src/Classes/NeuralMap/Effectors.cpp`  
-Effector name strings are defined in `effectorName(Effector effector)` in `src/Classes/NeuralMap/DebugTypes.cpp`  
+Effector name strings are defined in `effectorName(Effector effector)` in `src/Classes/NeuralMap/DebugTypes.cpp`
 
-###### The Visualiser long name strings are defined in `shrtNodeToLong(std::string shrt)` in `src/Visualise/Visualise.cpp`  
+###### The Visualiser long name strings are defined in `shrtNodeToLong(std::string shrt)` in `src/Visualise/Visualise.cpp`
 
 <br>
 
-<h3> Current State </h3>
+<h2> Brief Documentation </h2>
+<h6> This documentation will be expanded in the future, and I may make a youtube video explaining how the simulator and visualiser works (as in more technical / code orientated detail than <a href="https://www.youtube.com/watch?v=N3tRFayqVtk">David Miller's video</a>)</h6>
+<h3> Survival Conditions & Shape Files </h3>
+
+The `.shape` file is a custom language that allows the program to parse shapes for the simulation. It is extremely basic right now, and is only used for survival conditions. In the future, they will be used to define walls inside the simulation. The language needs specific usage of spaces and newlines to parse correctly.
+
+__Shapes__
+| Shape | Arguments | Example |
+| --- | --- | --- |
+| `CIRCLE` | `[LOC X]` `[LOC Y]` `[RADIUS]` | `CIRCLE 64 64 25` |
+| `RECT` | `[LEFT X]` `[RIGHT X]` `[TOP Y]` `[BOTTOM Y]` | `RECT 64 128 0 128` |
+
+Right now, shapes are used to define areas where cells will survive at the end of a generation. In the future, kill shapes will be added, where cells are killed off if they are inside the shape for a certain amount of time. Wall shapes will also be added so that dynamic maps for the cells to survive in can be created.
+
+__Conditions__  
+| Keyword | Arguments | Description | Example |
+| --- | --- | --- | --- |
+| `IF` | `[LEFT VAL]` `[OPERATOR]` `[RIGHT VAL]` | Sets the current condition to parse with | `IF {GEN} > 200` |
+| `ELSE` |  | Inverts the current condition | `ELSE` |
+| `ENDIF` |  | Clears the current condition | `ENDIF` |  
+> Please Note: Conditions do not support expression inputs yet. The left val and right val can only be a Token, or an integer. Expression parsing will come in the future. (This means that `{STEPSPERGEN}/2` would be invalid)
+
+Conditions allow shapes to change during a simulation. They are extremely simple right now and so do not support math operations as inputs. However, they do support all conditional operators (`==`, `!=`, `>`, `>=`, `<`, `<=`).
+An example usage of conditions would be:
+###### survival.map
+```
+IF {GEN} > 200
+RECT 64 128 0 128
+ELSE
+CIRCLE 0 64 25
+ENDIF
+```
+
+__Tokens__
+| Token | Description |
+| --- | --- |
+| `STEP` | The current simulation step |
+| `STEPSPERGEN` | The total amount of simulation steps in a generation |
+| `GEN` | The current generation |  
+> Please Note: Currently, Tokens can only be used in conditions.
+
+Tokens are used for specifying simulation parameters in a shape file. They are used by enclosing the variable name in `{...}`; for instance: `{GEN}`, which returns the simulation's current generation.
+
+
+Shape condition tokens are not very useful for survival configuration files as changing them during a generation wont do anything; It only matters what shape is active at the end of the generation. I might add random tokens, and I definitely will add shape files for map configuration, so moving walls, etc, can be programmed.
+
+<h3> Definitions </h3>
+<h4> Receptor Nodes </h4>
+
+Receptors are inputs for neural maps that represent a cell's senses, and other inputs such as an oscillator as an internal clock. Right now there are 5 receptors (`LOC_X`, `LOC_Y`, `RANDOM`, `AGE`, and `OSCILLATOR`).
+
+<h4> Effector Nodes </h4>
+
+Effectors are outputs for neural maps that affect the cell's position. Right now there are 9 movement effectors, and 0 misc effectors. Misc effectors could be used to add pheremones or audio / visual communication between cells.
+
+<h4> Internal Nodes </h4>
+
+Internal nodes are intermediate nodes in neural maps that act as multipliers or variables for it. They allow inputs to be summed up and output into another node. They can also connect to themselves, which act as a sort of data delay, as a loop back connection uses the node's value from the last step.
+
+<h4> Steps </h4>
+
+Steps are an 'update' in the simulation. Each step a cell can move 1 position in any direction as a result of their neural map. Neural maps are simulated every step.
+
+<h4> Generations </h4>
+
+A Generation is a full lifetime of a cell. A generation has a certain number of steps and once a generation has passed, every cell that does not meet the survival conditions is killed off. Then, a new set of cells are spawned, with their Genome being a mutated mix of a random pair of cells that survived the previous generation.
+
+<h4> Gene </h4>
+
+A Gene is a connection between two Nodes in a Neural Map. A source is the node it comes from and a sink is the node it connects to. It has a weight and it multiplies it's source's output by its weight, then passes that to it's sink's input.
+
+<h4> Genome </h4>
+
+A Genome is a list of genes that defines a full neural map. Genomes can be mutilated and combined to form child genomes.
+
+<h4> Neural Map </h4>
+
+A Neural Map is a set of nodes that are connected using the connections described in a Genome. Each cell has a Neural Map, and for every step of the generation, every cell's neural map is simulated to determine the cell's behaviour that step.
+
+<h4> Cell </h4>
+
+A simple "microorganism" that contains a Neural Map, and a location on the grid.  
+
+<br>
+
+<h2> Current State </h2>
 
 <p> The main simulator and visualiser is finished. What's mostly needed is optimisation, and a couple other features that make the program more fun to play around with. </p>
 
 <br>
 
-<h3> Contribution </h3>
+<h2> Contribution </h2>
 
 <p> Most help is needed with optimisation, as I only have ~1 years experience with C++, and there will be many slow operations and calls that I wrote without realising how slow they are. I also dont have much time to work on the program, so any expansion with new receptors, effectors, etc is greatly appreciated :D </p>
 
 <br>
 
-<h3> Screenshots </h3>
+<h2> Screenshots </h2>
 <h4> 10,000 Gen Simulation with it's Neural Map Visualisation </h4>
 <p float="left">
 <img src="https://user-images.githubusercontent.com/33568643/167692593-8c4ff5fb-fc6c-4a88-b18e-16d1a6c4013d.png" height="300">

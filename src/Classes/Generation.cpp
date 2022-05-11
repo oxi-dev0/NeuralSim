@@ -4,10 +4,29 @@ Debug::Timer gtimer;
 
 bool HasSurvived(Cell cell) {
 	// BE IN CENTER CIRCLE
-	Vector2D midpoint = Vector2D(Utils::GlobalConfig.sizeX / 2, Utils::GlobalConfig.sizeY / 2);
-	return std::sqrt((std::abs(midpoint.x - cell.pos.x) ^ 2) + (std::abs(midpoint.y - cell.pos.y) ^ 2)) < 5;
+	/*Vector2D midpoint = Vector2D(Utils::GlobalConfig.sizeX / 2, Utils::GlobalConfig.sizeY / 2);
+	return std::sqrt((std::abs(midpoint.x - cell.pos.x) ^ 2) + (std::abs(midpoint.y - cell.pos.y) ^ 2)) < 5;*/
 
+	bool survived = false;
+	int c = 0;
+	for (auto circle : Survival::SurvivalConfig.survivalCircs) {
+		if (Survival::SurvivalConfig.evaluatedCircs[c]) {
+			// Shape passes config condition, use to determine survival
+			bool cellInside = std::sqrt(pow(std::abs(circle.pos.x - cell.pos.x), 2) + pow(std::abs(circle.pos.y - cell.pos.y), 2)) <= circle.radius;
+			survived = survived || cellInside;
+		}
+		c++;
+	}
+	int r = 0;
+	for (auto rect : Survival::SurvivalConfig.survivalRects) {
+		if (Survival::SurvivalConfig.evaluatedRects[r]) {
+			// Shape passes config condition, use to determine survival
+			bool cellInside = (cell.pos.x >= rect.left) && (cell.pos.x <= rect.right) && (cell.pos.y >= rect.top) && (cell.pos.y <= rect.bottom);
+			survived = survived || cellInside;
+		}
+	}
 
+	return survived;
 	// TEST REQUIREMENT: BE OVER HALFWAY X
 	// return cell.pos.x > Utils::GlobalConfig.sizeX / 2;
 }
@@ -91,7 +110,10 @@ void EndGeneration() {
 void SimulationStep(sf::RenderTexture& texture) {
 	Utils::GlobalSimData.currentStep++;
 
-	// IMPLEMENT THREADED
+	// Evaluate the survival shape conditions
+	Survival::SurvivalConfig.EvaluateShapes();
+
+	// Threads could be slowing this down when population rises
 	std::vector<std::thread> threads;
 	for (auto& cell : Globals::GlobalGrid.cells) {
 		if (cell == nullptr) { continue; }

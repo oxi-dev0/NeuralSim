@@ -4,6 +4,7 @@
 
 #include "Genome.h"
 #include "Output.h"
+#include "Survival.h"
 
 extern Debug::Timer gtimer;
 

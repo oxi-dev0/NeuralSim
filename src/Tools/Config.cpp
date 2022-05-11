@@ -20,7 +20,8 @@ namespace Tools {
 			{ "s", "simulate" },
 			{ "v", "visualise" },
 			{ "c", "config"},
-			{ "k", "kconst"}
+			{ "k", "kconst"},
+			{ "sc", "survival"}
 		};
 
 		std::unordered_map<std::string, bool> valMap = {
@@ -78,23 +79,28 @@ namespace Tools {
 		std::unordered_map<std::string, std::string> map = ArgvLongPairs(argc, argv);
 
 		std::string configFile = "config/config.ini";
+		std::string survivalFile = "config/survival.sv";
 		std::string nmFile = "";
 		int kconst = 400;
+
+		Config newConfig;
 
 		for (auto& kv : map) {
 			std::string key(kv.first);
 			std::string val(kv.second);
 
 			if (key == "config") { configFile = val; }
+			if (key == "survival") { survivalFile = val; }
 			if (key == "visualise") { nmFile = val; }
 			if (key == "kconst") { kconst = std::stoi(val); }
 		}
 
 		if (nmFile != "") {
-			return Config(1000, 1000, 1, 0, 0, 0, 0, 0, 0, "", nmFile, kconst);
+			return Config(1000, 1000, 1, 0, 0, 0, 0, 0, 0, "", nmFile, kconst, "");
 		}
-
-		return InitFromIni(configFile);
+		
+		newConfig.survivalconfigfile = survivalFile;
+		return InitFromIni(configFile, newConfig);
 	}
 
 	ProgramMode Config::ModeFromArgv(int argc, char** argv) {
@@ -113,7 +119,7 @@ namespace Tools {
 		return mode;
 	}
 
-	Config Config::InitFromIni(const std::string iniS) {
+	Config Config::InitFromIni(const std::string iniS, Config newConfig) {
 		if (!std::filesystem::exists(iniS)) { LOG_CRITICAL("Could not load configuration file ({0})", iniS); std::terminate(); }
 
 		mINI::INIFile file(iniS);
@@ -121,7 +127,6 @@ namespace Tools {
 
 		file.read(ini);
 
-		Config newConfig;
 		newConfig.sizeX = std::stoi(ini["scene"]["sizeX"]);
 		newConfig.sizeY = std::stoi(ini["scene"]["sizeY"]);
 		newConfig.tileSize = std::stoi(ini["scene"]["tileSize"]);

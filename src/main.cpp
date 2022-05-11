@@ -16,6 +16,7 @@
 #include "Classes/Utils.h"
 #include "Classes/Globals.h"
 #include "Classes/Generation.h"
+#include "Classes/Survival.h"
 
 #include "Classes/Output.h"
 
@@ -46,7 +47,9 @@ void usage(char* progName)
         "-s   | --simulate                      Simulate generations of cells [DEFAULT]" << std::endl <<
         "-v   | --visualise       [*.nm]        Visualise an exported neural map file" << std::endl <<
         "[OTHER]" << std::endl <<
-        "-c   | --config          [*.ini]       Specify the simulation configuration file [DEFAULT: config.ini]" << std::endl;
+        "-c   | --config          [*.ini]       Specify the simulation configuration file [DEFAULT: config/config.ini]" << std::endl <<
+        "-sc  | --survival        [*.sv]        Specify the survival condition configuration file [DEFAULT: config/survival.sv]"
+        "-k   | --kconst          [int]         Set the Fruchterman-Reingold constant [DEFAULT: 400]" << std::endl;
 }
 
 void sim(sf::RenderTexture& texture) {
@@ -78,6 +81,10 @@ int main(int argc, char** argv)
     Utils::GlobalConfig = config;
 
     LOG_INFO("Initialised Arguments, Utils and Globals in {0}s", inittmr.Elapsed());
+
+    Debug::Timer parseTimer;
+    Survival::ParseSurvivalFile(Utils::GlobalConfig.survivalconfigfile);
+    LOG_INFO("Parsed survival config file in {0}s", parseTimer.Elapsed());
 
     sf::ContextSettings settings;
     settings.antialiasingLevel = 8;

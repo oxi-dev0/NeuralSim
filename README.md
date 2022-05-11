@@ -134,7 +134,7 @@ __Tokens__
 Tokens are used for specifying simulation parameters in a shape file. They are used by enclosing the variable name in `{...}`; for instance: `{GEN}`, which returns the simulation's current generation.
 
 
-Shape condition tokens are not very useful for survival configuration files as changing them during a generation wont do anything; It only matters what shape is active at the end of the generation. I might add random tokens, and I definitely will add shape files for map configuration, so moving walls, etc, can be programmed.
+Shape condition tokens are not very useful for survival configuration files as changing them during a generation wont do anything; It only matters what shape is active at the end of the generation, meaning only `{GEN}` is useful. I might add random tokens, and I definitely will add shape files for map configuration, so moving walls, etc, can be programmed.
 
 <h3> Definitions </h3>
 <h4> Receptor Nodes </h4>

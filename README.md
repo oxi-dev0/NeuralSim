@@ -112,9 +112,9 @@ __Conditions__
 | `ENDIF` |  | Clears the current condition | `ENDIF` |  
 > Please Note: Conditions do not support expression inputs yet. The left val and right val can only be a Token, or an integer. Expression parsing will come in the future. (This means that `{STEPSPERGEN}/2` would be invalid)
 
-Conditions allow shapes to change during a simulation. They are extremely simple right now and so do not support math operations as inputs. However, they do support all conditional operators (`==`, `!=`, `>`, `>=`, `<`, `<=`).
+Conditions allow shapes to change during a simulation. They are extremely simple right now and so do not support math operations as inputs. However, they do support all conditional operators (`==`, `!=`, `>`, `>=`, `<`, `<=`).  
 An example usage of conditions would be:
-###### survival.map
+###### survival.shape
 ```
 IF {GEN} > 200
 RECT 64 128 0 128

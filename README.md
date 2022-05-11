@@ -115,15 +115,6 @@ __Conditions__
 > Please Note: Conditions do not support expression inputs yet. The left val and right val can only be a Token, or an integer. Expression parsing will come in the future. (This means that `{STEPSPERGEN}/2` would be invalid)
 
 Conditions allow shapes to change during a simulation. They are extremely simple right now and so do not support math operations as inputs. However, they do support all conditional operators (`==`, `!=`, `>`, `>=`, `<`, `<=`).  
-An example usage of conditions would be:
-###### survival.shape
-```
-IF {GEN} > 200
-RECT 64 128 0 128
-ELSE
-CIRCLE 0 64 25
-ENDIF
-```
 
 __Tokens__
 | Token | Description |
@@ -137,6 +128,27 @@ Tokens are used for specifying simulation parameters in a shape file. They are u
 
 
 Shape condition tokens are not very useful for survival configuration files as changing them during a generation wont do anything; It only matters what shape is active at the end of the generation, meaning only `{GEN}` is useful. I might add random tokens, and I definitely will add shape files for map configuration, so moving walls, etc, can be programmed.
+
+<br>
+
+An example of a `.shape` file is:
+###### circle2rect.shape
+```
+~ Will switch to rectangle after generation 500
+IF {GEN} >= 500
+  RECT 64 128 0 128	~ Right side box
+ELSE
+  CIRCLE 64 64 25   	~ Center circle
+ENDIF
+
+~ Circle is always present in left corner (ENDIF clears the current condition)
+CIRCLE 0 128 25
+
+~ To use this run `NeuralSim.exe -sc config/circle2rect.shape`
+```
+> `~` can be used to comment either on a full line or after syntax
+
+<br>
 
 <h3> Definitions </h3>
 <h4> Receptor Nodes </h4>
@@ -185,7 +197,7 @@ A simple "microorganism" that contains a Neural Map, and a location on the grid.
 
 <h2> Contribution </h2>
 
-<p> Most help is needed with optimisation, as I only have ~1 years experience with C++, and there will be many slow operations and calls that I wrote without realising how slow they are. I also dont have much time to work on the program, so any expansion with new receptors, effectors, etc is greatly appreciated :D </p>
+<p> The most help is needed with optimisation, as I only have ~1 years experience with C++, and there will be many slow operations and calls that I wrote without realising how slow they are. I also dont have much time to work on the program, so any expansion with new receptors, effectors, etc is greatly appreciated :D </p>
 
 <br>
 

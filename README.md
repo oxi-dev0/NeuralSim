@@ -23,7 +23,7 @@
 
 - [x] Generational Simulator
 - [x] Neural Map Viewer / Visualiser
-- [x] Survival Condition Language
+- [x] Shape Parsing Language
 - [ ] Simulation of custom Neural Maps
 
 <h3> Dependencies </h3>
@@ -61,7 +61,7 @@
 | `-v [*.nm]` | Visualise mode |
 |  |
 | `-c [*.ini]` | Specify configuration file **[DEFAULT: `config/config.ini`]** |
-| `-sc [*.sv]` | Specify the survival condition configuration file **[DEFAULT: `config/survival.sv`]** |
+| `-sc [*.shape]` | Specify the survival shape file **[DEFAULT: `config/survival.shape`]** |
 | `-k [int]` | Set the Fruchterman-Reingold constant **[DEFAULT: 400]** |
 
 <br>

@@ -31,7 +31,7 @@ namespace Tools {
 			{ "visualise", true },
 			{ "config", true },
 			{ "kconst", true },
-			{ "sc", true }
+			{ "survival", true }
 		};
 
 		std::unordered_map<std::string, std::string> map;

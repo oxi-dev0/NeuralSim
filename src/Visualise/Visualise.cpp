@@ -293,7 +293,7 @@ namespace Visualisation {
 			if (nodeChain.size() > 0) {
 				if (std::find(nodeChain.begin(), nodeChain.end(), nodeId) == nodeChain.end()) {
 					// This node is not in node chain
-					nodeCol = sf::Color(100, 100, 100);
+					nodeCol = sf::Color(50, 50, 50);
 				}
 			}
 
@@ -307,7 +307,7 @@ namespace Visualisation {
 			sf::Text text;
 			text.setFont(font);
 			text.setString(nodes[nodeId].name);
-			text.setCharacterSize(noderadius*0.75f); // pixels
+			text.setCharacterSize(noderadius*0.75f);
 
 			//CENTER
 			size_t CharacterSize = text.getCharacterSize();
@@ -363,7 +363,7 @@ namespace Visualisation {
 					if (nodeChain.size() > 0) {
 						if (std::find(nodeChain.begin(), nodeChain.end(), nodeId) == nodeChain.end()) {
 							// This connection is not in node chain
-							lineCol = sf::Color(100, 100, 100);
+							lineCol = sf::Color(50, 50, 50);
 							refCircle.setOutlineColor(lineCol);
 						}
 					}
@@ -395,9 +395,9 @@ namespace Visualisation {
 				sf::Color lineCol = weightF > 0 ? sf::Color::Green : sf::Color::Red;
 
 				if (nodeChain.size() > 0) {
-					if (std::find(nodeChain.begin(), nodeChain.end(), refId) == nodeChain.end()) {
+					if (std::find(nodeChain.begin(), nodeChain.end(), refId) == nodeChain.end() || std::find(nodeChain.begin(), nodeChain.end(), nodeId) == nodeChain.end()) {
 						// This connection is not in node chain
-						lineCol = sf::Color(100, 100, 100);
+						lineCol = sf::Color(50, 50, 50);
 					}
 				}
 

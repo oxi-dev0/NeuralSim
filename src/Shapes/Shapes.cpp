@@ -89,6 +89,7 @@ namespace Shapes {
 		}
 	}
 
+	// Parse a condition string such as `{GEN} > 50`
 	ParsedCondition::ParsedCondition(std::string conditionString) {
 		auto data = split(conditionString, ' ');
 		lSide = data[0];
@@ -162,7 +163,7 @@ namespace Shapes {
 		s = s.substr(0, index);
 	}
 
-
+	// Parse the shape file into classes that can be evaluated by the sim
 	ShapeFile ParseShapeFile(std::string file) {
 		if (!std::filesystem::exists(file)) { LOG_CRITICAL("Could not load the shape file `{0}`", file); std::terminate(); }
 		std::ifstream f(file);

@@ -104,9 +104,9 @@ namespace Visualisation {
 	std::vector<sf::Vector2f> CurvedLine(sf::RenderTexture& texture, float width, sf::Color col, sf::Vector2f a, sf::Vector2f b, sf::Vector2f c) {
 		// P = ((1−t)^2 * P1) + (2 * (1−t) * t * P2) + (t^2 * P3)
 		std::vector<sf::Vector2f> points;
-		for (float t = 0; t < 1.0f; t += 0.01) {
+		for (float t = 0; t < 1.0f; t += 0.01f) {
 			sf::Vector2f newPoint;
-			newPoint = ((pow(1 - t, 2)) * a) + (2 * (1 - t) * t * b) + (pow(t, 2) * c);
+			newPoint = (((float)pow(1 - t, 2)) * a) + (2 * (1 - t) * t * b) + ((float)pow(t, 2) * c);
 			points.push_back(newPoint);
 		}
 
@@ -177,11 +177,11 @@ namespace Visualisation {
 		//http://paulbourke.net/geometry/circlesphere/
 		//a = (r02 - r12 + d2 ) / (2 d) 
 		//P2 = P0 + a ( P1 - P0 ) / d 
-		float a = (pow(r0, 2) - pow(r1, 2) + pow(d, 2)) / (2 * d);
+		float a = ((float)pow(r0, 2) - (float)pow(r1, 2) + (float)pow(d, 2)) / (2 * d);
 		sf::Vector2f pos2 = pos0 + a * (pos1 - pos0) / d; // Intersection point inbetween the circles
 
 		//h2 = r02 - a2
-		float h = std::sqrt(pow(r0, 2) - pow(a, 2));
+		float h = std::sqrt((float)pow(r0, 2) - (float)pow(a, 2));
 
 		//x3 = x2 +- h ( y1 - y0 ) / d 
 		//y3 = y2 -+ h ( x1 - x0 ) / d 
@@ -222,7 +222,7 @@ namespace Visualisation {
 
 		int i = 0;
 		for (auto pos : positionsCache) {
-			float d = std::sqrt(pow(std::abs(pos.x - target.x), 2) + pow(std::abs(pos.y - target.y), 2));
+			float d = std::sqrt((float)pow(std::abs(pos.x - target.x), 2) + (float)pow(std::abs(pos.y - target.y), 2));
 			if (d < closestD) {
 				closestD = d;
 				closestI = i;
@@ -248,7 +248,7 @@ namespace Visualisation {
 		assert(font.loadFromFile("resources/arial.ttf"));
 
 		double k = Utils::GlobalConfig.kconst;
-		double iters = 10000;
+		unsigned int iters = 10000;
 
 		std::vector<double> radii = nodesoup::size_radiuses(g, 20.0, k);
 
@@ -260,11 +260,11 @@ namespace Visualisation {
 		}
 		sf::Vector2f total;
 		for (auto& pos : positions) {
-			total.x += pos.x;
-			total.y += pos.y;
+			total.x += (float)pos.x;
+			total.y += (float)pos.y;
 		}
 		sf::Vector2f center = total / (float)positions.size();
-		sf::Vector2 offset = (sf::Vector2f(texture.getSize().x / 2, texture.getSize().y / 2) - center);
+		sf::Vector2 offset = (sf::Vector2f((float)texture.getSize().x / 2, (float)texture.getSize().y / 2) - center);
 		for (int p = 0; p < positions.size(); p++) {
 			nodesoup::Point2D newPos(positions[p].x + offset.x, positions[p].y + offset.y);
 			positions[p] = newPos;
@@ -300,14 +300,14 @@ namespace Visualisation {
 			nodeCirc.setFillColor(nodeCol);
 			nodeCirc.setOutlineThickness(1);
 			nodeCirc.setOutlineColor(sf::Color::Black);
-			nodeCirc.setPosition(sf::Vector2f(positions[nodeId].x, positions[nodeId].y) - sf::Vector2f(noderadius, noderadius));
+			nodeCirc.setPosition(sf::Vector2f((float)positions[nodeId].x, (float)positions[nodeId].y) - sf::Vector2f(noderadius, noderadius));
 
 			nodesToRender.push_back(nodeCirc);
 
 			sf::Text text;
 			text.setFont(font);
 			text.setString(nodes[nodeId].name);
-			text.setCharacterSize(noderadius*0.75f);
+			text.setCharacterSize((unsigned int)(noderadius*0.75f));
 
 			//CENTER
 			size_t CharacterSize = text.getCharacterSize();
@@ -317,9 +317,9 @@ namespace Visualisation {
 			{
 				sf::Uint32 Character = nodes[nodeId].name.at(x);
 
-				const sf::Glyph& CurrentGlyph = font.getGlyph(Character, CharacterSize, false);
+				const sf::Glyph& CurrentGlyph = font.getGlyph(Character, (unsigned int)CharacterSize, false);
 
-				size_t Height = CurrentGlyph.bounds.height;
+				size_t Height = (size_t)CurrentGlyph.bounds.height;
 
 				if (MaxHeight < Height)
 					MaxHeight = Height;
@@ -327,8 +327,8 @@ namespace Visualisation {
 
 			sf::FloatRect rect = text.getLocalBounds();
 
-			rect.left = (positions[nodeId].x) - (rect.width / 2.0f);
-			rect.top = (positions[nodeId].y) - (MaxHeight / 2.0f) - (rect.height - MaxHeight) + ((rect.height - CharacterSize) / 2.0f);
+			rect.left = (float)((positions[nodeId].x) - (rect.width / 2.0f));
+			rect.top = (float)((positions[nodeId].y) - (MaxHeight / 2.0f) - (rect.height - MaxHeight) + ((rect.height - CharacterSize) / 2.0f));
 
 			text.setPosition(sf::Vector2f(rect.left, rect.top));
 			text.setFillColor(sf::Color::Black);
@@ -343,15 +343,15 @@ namespace Visualisation {
 
 				if (refId == nodeId) {
 					// SELF REFERENCE; NEED CIRCLE
-					sf::Vector2f orig = sf::Vector2f(positions[nodeId].x, positions[nodeId].y);
+					sf::Vector2f orig = sf::Vector2f((float)positions[nodeId].x, (float)positions[nodeId].y);
 					float radius = (float)radii[nodeId] + 5.0f;
 
-					auto circleDir = UnitCircleVec((selfCons*40)-70);
+					auto circleDir = UnitCircleVec((float)(selfCons*40)-70.0f);
 					sf::Vector2f center = orig + (circleDir * radius);
 					sf::CircleShape refCircle(radius);
 
 					float weightF = weightI / 8192.0f;
-					float width = 3 + 1.5 * std::abs(weightF);
+					float width = 3.0f + 1.5f * std::abs(weightF);
 					width *= 2;
 
 					refCircle.setFillColor(sf::Color::Transparent);
@@ -370,17 +370,17 @@ namespace Visualisation {
 
 					texture.draw(refCircle);
 
-					sf::Vector2f arrowPoint = CircleIntersection(sf::Vector2f(positions[nodeId].x, positions[nodeId].y), noderadius, center, radius);
-					sf::Vector2f arrowBaseRef = arrowPoint + VectorLerp((arrowPoint - sf::Vector2f(positions[nodeId].x, positions[nodeId].y)), (center - sf::Vector2f(positions[nodeId].x, positions[nodeId].y)), 0.45f);
-					arrowPoint += ((arrowPoint - sf::Vector2f(positions[nodeId].x, positions[nodeId].y)) - (center - sf::Vector2f(positions[nodeId].x, positions[nodeId].y))) * 0.1f;
+					sf::Vector2f arrowPoint = CircleIntersection(sf::Vector2f((float)positions[nodeId].x, (float)positions[nodeId].y), noderadius, center, radius);
+					sf::Vector2f arrowBaseRef = arrowPoint + VectorLerp((arrowPoint - sf::Vector2f((float)positions[nodeId].x, (float)positions[nodeId].y)), (center - sf::Vector2f((float)positions[nodeId].x, (float)positions[nodeId].y)), 0.45f);
+					arrowPoint += ((arrowPoint - sf::Vector2f((float)positions[nodeId].x, (float)positions[nodeId].y)) - (center - sf::Vector2f((float)positions[nodeId].x, (float)positions[nodeId].y))) * 0.1f;
 					ArrowHead(texture, 10.0f, 15.0f, lineCol, arrowPoint, arrowBaseRef);
 
 					selfCons++;
 					continue;
 				}
 
-				sf::Vector2f pos1 = sf::Vector2f(positions[nodeId].x, positions[nodeId].y);
-				sf::Vector2f pos2 = sf::Vector2f(positions[refId].x, positions[refId].y);
+				sf::Vector2f pos1 = sf::Vector2f((float)positions[nodeId].x, (float)positions[nodeId].y);
+				sf::Vector2f pos2 = sf::Vector2f((float)positions[refId].x, (float)positions[refId].y);
 
 
 				auto dir = (pos2 - pos1).normalized();
@@ -391,7 +391,7 @@ namespace Visualisation {
 				sf::Vector2f bendPos = mid + (bendDir * bendStrength);
 
 				float weightF = weightI / 8192.0f;
-				float width = 3 + (1.5 * std::abs(weightF));
+				float width = 3.0f + (float)(1.5f * std::abs(weightF));
 				sf::Color lineCol = weightF > 0 ? sf::Color::Green : sf::Color::Red;
 
 				if (nodeChain.size() > 0) {
@@ -453,7 +453,7 @@ namespace Visualisation {
 			bool hovered = false;
 			for (auto& point : points) {
 				auto v = point - mousePos;
-				float dist = std::sqrt(pow(v.x, 2) + pow(v.y, 2));
+				float dist = std::sqrt((float)pow(v.x, 2) + (float)pow(v.y, 2));
 				if (dist <= 10) {
 					hovered = true;
 				}
@@ -466,8 +466,8 @@ namespace Visualisation {
 
 		// Nodes get hover priority
 		for (nodesoup::vertex_id_t nodeId = 0; nodeId < g.size(); nodeId++) {
-			auto v = sf::Vector2f(positions[nodeId].x, positions[nodeId].y) - mousePos;
-			float dist = std::sqrt(pow(v.x, 2) + pow(v.y, 2));
+			auto v = sf::Vector2f((float)positions[nodeId].x, (float)positions[nodeId].y) - mousePos;
+			float dist = std::sqrt((float)pow(v.x, 2) + (float)pow(v.y, 2));
 			if (dist <= (float)radii[nodeId]) {
 				std::string lng = shrtNodeToLong(nodes[nodeId].name);
 				if (lng != "") {
@@ -549,10 +549,10 @@ namespace Visualisation {
 					sf::ContextSettings settings;
 					settings.antialiasingLevel = 8;
 					if (!texture.create(event.size.width, event.size.height, settings)) { LOG_CRITICAL("Error resizing texture"); }
-					view = sf::View(sf::Vector2f(texture.getSize().x / 2, texture.getSize().y / 2), sf::Vector2f(event.size.width, event.size.height));
+					view = sf::View(sf::Vector2f((float)texture.getSize().x / 2, (float)texture.getSize().y / 2), sf::Vector2f((float)event.size.width, (float)event.size.height));
 					texture.setView(view);
-					winView.setSize(sf::Vector2f(event.size.width, event.size.height));
-					winView.setCenter(sf::Vector2f(event.size.width, event.size.height) / 2);
+					winView.setSize(sf::Vector2f((float)event.size.width, (float)event.size.height));
+					winView.setCenter(sf::Vector2f((float)event.size.width, (float)event.size.height) / 2);
 					window.setView(winView);
 				}
 						break;
@@ -600,7 +600,7 @@ namespace Visualisation {
 					else if (event.mouseWheelScroll.delta >= 1)
 						zoom = std::max(.5f, zoom - .1f);
 
-					view.setSize(sf::Vector2f(texture.getSize().x, texture.getSize().y));
+					view.setSize(sf::Vector2f((float)texture.getSize().x, (float)texture.getSize().y));
 					view.zoom(zoom);
 					texture.setView(view);
 					break;

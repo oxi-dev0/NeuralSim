@@ -48,16 +48,16 @@ namespace Shapes {
 	public:
 		ParsedCondition condition;
 		Vector2D pos;
-		float radius;
-		Circle(Vector2D p, float r) { pos = p; radius = r; }
+		unsigned int radius;
+		Circle(Vector2D p, unsigned int r) { pos = p; radius = r; }
 		Circle() { pos = Vector2D(0, 0); radius = 0; }
 	};
 
 	struct Rect {
 	public:
 		ParsedCondition condition;
-		float left, right, top, bottom;
-		Rect(float l, float r, float t, float b) { left = l; right = r; top = t; bottom = b; }
+		int left, right, top, bottom;
+		Rect(int l, int r, int t, int b) { left = l; right = r; top = t; bottom = b; }
 		Rect() { left = 0; right = 0; top = 0; bottom = 0; }
 	};
 

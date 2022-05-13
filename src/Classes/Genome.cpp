@@ -8,7 +8,7 @@ namespace NeuralNet {
 		Gene newGene = Gene();
 		newGene.sourceId = sourceType == 0 ? Utils::RandRange(0, (Receptor::RECEPTORCOUNT - 1)) : Utils::RandRange(Receptor::RECEPTORCOUNT, (Receptor::RECEPTORCOUNT - 1) + Utils::GlobalConfig.internalNeuronCount);
 		newGene.sinkId = sinkType == 0 ? Utils::RandRange((Receptor::RECEPTORCOUNT)+Utils::GlobalConfig.internalNeuronCount, (Receptor::RECEPTORCOUNT - 1) + Utils::GlobalConfig.internalNeuronCount + (Effector::ACTIONCOUNT - 1)) : Utils::RandRange(Receptor::RECEPTORCOUNT, (Receptor::RECEPTORCOUNT - 1) + Utils::GlobalConfig.internalNeuronCount);
-		newGene.weight = Gene::randWeight() * 8192;
+		newGene.weight = (int)Gene::randWeight() * 8192;
 		return newGene;
 	}
 
@@ -22,7 +22,7 @@ namespace NeuralNet {
 	}
 
 	void MutateGene(Genome& genome) {
-		unsigned geneIndex = Utils::RandRange(0, genome.size() - 1);
+		unsigned geneIndex = (unsigned int)Utils::RandRange(0, (unsigned int)genome.size() - 1);
 		uint8_t bitIndex8 = 1 << Utils::RandRange(0, 7);
 
 		float chance = Utils::RandRange() / (float)Random::RANDOM_UINT_MAX;
@@ -46,7 +46,7 @@ namespace NeuralNet {
 	}
 
 	void MutateGenome(Genome& genome) {
-		unsigned geneCount = genome.size();
+		unsigned geneCount = (unsigned int)genome.size();
 		while (geneCount-- > 0) {
 			if (Utils::RandRange() / (float)Random::RANDOM_UINT_MAX < Utils::GlobalConfig.mutationChance) {
 				MutateGene(genome);
@@ -64,8 +64,8 @@ namespace NeuralNet {
 			LOG_CRITICAL("ZERO CELLS SURVIVED");
 		}
 
-		parent1Idx = Utils::RandRange(0, parents.size() - 1);
-		parent2Idx = Utils::RandRange(0, parents.size() - 1);
+		parent1Idx = Utils::RandRange(0, (unsigned int)parents.size() - 1);
+		parent2Idx = Utils::RandRange(0, (unsigned int)parents.size() - 1);
 
 		Genome parent1 = parents[parent1Idx];
 		Genome parent2 = parents[parent2Idx];

@@ -12,7 +12,7 @@ namespace NeuralNet {
 		for (int receptorI = Receptor::LOC_X; receptorI != Receptor::RECEPTORCOUNT; receptorI++)
 		{
 			NeuronNode* node = new NeuronNode(NeuronType::RECEPTOR, -1, static_cast<Receptor>(receptorI), Effector::ACTIONCOUNT);
-			int id = Nodes.size();
+			int id = (int)Nodes.size();
 			Nodes.push_back(std::shared_ptr<NeuronNode>(node));
 			node->id = id;
 			vals->operator[](id)=0.5;
@@ -21,7 +21,7 @@ namespace NeuralNet {
 		for (int c = 0; c < Utils::GlobalConfig.internalNeuronCount; c++)
 		{
 			NeuronNode* node = new NeuronNode(NeuronType::INTERNAL, -1, Receptor::RECEPTORCOUNT, Effector::ACTIONCOUNT);
-			int id = Nodes.size();
+			int id = (int)Nodes.size();
 			Nodes.push_back(std::shared_ptr<NeuronNode>(node));
 			node->id = id;
 			vals->operator[](id) = 0.5;
@@ -30,7 +30,7 @@ namespace NeuralNet {
 		for (int effectorI = Effector::MOVE_X; effectorI != Effector::ACTIONCOUNT; effectorI++)
 		{
 			NeuronNode* node = new NeuronNode(NeuronType::EFFECTOR, -1, Receptor::RECEPTORCOUNT, static_cast<Effector>(effectorI));
-			int id = Nodes.size();
+			int id = (int)Nodes.size();
 			Nodes.push_back(std::shared_ptr<NeuronNode>(node));
 			node->id = id;
 			vals->operator[](id) = 0.5;
@@ -66,7 +66,7 @@ namespace NeuralNet {
 
 		// For each effector, trace back down the neuron tree (using cached values to prevent recalculation) (inputs are stored in the cache before hand)
 		for (auto Node : Nodes) {
-			if (!Node->type == NeuronType::EFFECTOR) {
+			if (!(Node->type == NeuronType::EFFECTOR)) {
 				continue;
 			}
 			

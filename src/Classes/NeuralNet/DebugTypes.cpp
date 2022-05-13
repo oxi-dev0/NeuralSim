@@ -9,6 +9,7 @@ namespace NeuralNet {
 		case Receptor::OSC: return std::tuple<std::string, std::string>("OSC", "Oscillator"); break;
 		case Receptor::RANDOM: return std::tuple<std::string, std::string>("RND", "Random"); break;
 		}
+		return std::tuple<std::string, std::string>("NUL", "NULL");
 	}
 	
 	std::tuple<std::string, std::string> effectorName(Effector effector) {
@@ -23,5 +24,6 @@ namespace NeuralNet {
 		case Effector::MOVE_SOUTH: return std::tuple<std::string, std::string>("McS", "Move Compass South"); break;
 		case Effector::MOVE_WEST: return std::tuple<std::string, std::string>("McW", "Move Compass West"); break;
 		}
+		return std::tuple<std::string, std::string>("NUL", "NULL");
 	}
 }

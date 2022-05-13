@@ -72,7 +72,7 @@ void EndGeneration() {
 	std::vector<NeuralNet::Genome> survivingGenomes;
 
 	if (Utils::GlobalSimData.renderGen) {
-		ExportNeuralMap(Globals::GlobalGrid.cells[Utils::RandRange(1, Globals::GlobalGrid.cells.size() - 1)]->map);
+		ExportNeuralMap(Globals::GlobalGrid.cells[Utils::RandRange(1, (unsigned int)Globals::GlobalGrid.cells.size() - 1)]->map);
 	}
 
 	for (auto& cell : Globals::GlobalGrid.cells) {

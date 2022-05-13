@@ -87,6 +87,7 @@ namespace Shapes {
 		case ConditionOp::LESSERTHANOREQUALS:	return l <= r;	break;
 		case ConditionOp::NOTEQUALS:			return l != r;	break;
 		}
+		return false;
 	}
 
 	// Parse a condition string such as `{GEN} > 50`
@@ -127,6 +128,7 @@ namespace Shapes {
 			return ConditionOp::GREATERTHAN;
 			break;
 		}
+		return ConditionOp::NOTEQUALS;
 	}
 
 	std::string join(std::vector<std::string> lst, std::string delim, int startIndex)
@@ -173,6 +175,7 @@ namespace Shapes {
 
 		std::string line;
 		while (std::getline(f, line)) {
+
 			if (line[0] == '~') { continue; } // Ignore full comment lines
 			ltrim(line); // Trim Whitespace left
 			trailCommentTrim(line); // Trim comments from right

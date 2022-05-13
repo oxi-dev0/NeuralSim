@@ -1,3 +1,5 @@
+#pragma warning( disable : 4244 4267 4996 )
+
 #include "Output.h"
 
 void RenderFrame(sf::RenderTexture& texture, uint16_t gen, int frame, bool(*survived)(Cell)) {
@@ -7,7 +9,7 @@ void RenderFrame(sf::RenderTexture& texture, uint16_t gen, int frame, bool(*surv
 
     for (int c = 0; c < Globals::GlobalGrid.cells.size(); c++) {
         if (Globals::GlobalGrid.cells[c] == nullptr) { continue; }
-        sf::CircleShape shape(Utils::GlobalConfig.tileSize / 2);
+        sf::CircleShape shape((float)Utils::GlobalConfig.tileSize / 2);
         if (survived(*Globals::GlobalGrid.cells[c])) {
             shape.setFillColor(sf::Color::Green);
             shape.setOutlineThickness(0);
@@ -20,7 +22,7 @@ void RenderFrame(sf::RenderTexture& texture, uint16_t gen, int frame, bool(*surv
     texture.display();
 
     char s[25];
-    sprintf(s, "%04d", frame);
+    sprintf_s(s, "%04d", frame);
     std::string framnum(s);
 
     std::stringstream filepipe = std::stringstream();

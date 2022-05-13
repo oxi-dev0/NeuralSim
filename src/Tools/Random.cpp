@@ -4,7 +4,7 @@ namespace Random {
     RandomGenerator::RandomGenerator()
     {
         // Non-deterministic initialization.
-        std::mt19937 generator(time(0));
+        std::mt19937 generator((unsigned int)time(0));
 
         // Initialize Jenkins, but don't let any of the values be zero:
         a = 0xf1ea5eed;

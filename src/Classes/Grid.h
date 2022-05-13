@@ -28,8 +28,8 @@ public:
 
 	void Init(uint16_t sizeX, uint16_t sizeY);
 	void Clear() { for (Column& col : columns) { col.Clear(); }; }
-	uint16_t sizeX() const { return columns.size(); }
-	uint16_t sizeY() const { return columns[0].Size(); }
+	uint16_t sizeX() const { return (int)columns.size(); }
+	uint16_t sizeY() const { return (int)columns[0].Size(); }
 
 	uint16_t at(Vector2D loc) const { return columns[loc.x][loc.y]; }
 	uint16_t at(uint16_t x, uint16_t y) const { return columns[x][y]; }
@@ -44,7 +44,7 @@ public:
 	void set(Vector2D loc, uint16_t val) { if (loc.x < sizeX() && loc.y < sizeY()) { columns[loc.x][loc.y] = val; } }
 	void set(uint16_t x, uint16_t y, uint16_t val) { if (x < sizeX() && y < sizeY()) { columns[x][y] = val; } }
 
-	void NewCell(std::shared_ptr<Cell> cell) { uint16_t i = cells.size(); cells.push_back(cell); set(cell->pos, i); cell->id = i; }
+	void NewCell(std::shared_ptr<Cell> cell) { uint16_t i = (uint16_t)cells.size(); cells.push_back(cell); set(cell->pos, i); cell->id = i; }
 	void MoveCell(Vector2D oldPos, Vector2D offset);
 
 	~Grid();

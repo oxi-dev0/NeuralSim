@@ -19,6 +19,8 @@
 
 #include <fstream>
 
+#include <stdio.h>
+
 extern void RenderFrame(sf::RenderTexture& texture, uint16_t gen, int frame, bool(*survived)(Cell));
 extern void ProduceVideo(uint16_t gen, std::string fps);
 

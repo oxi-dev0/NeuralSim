@@ -42,4 +42,5 @@ float Cell::GetReceptorVal(NeuralNet::Receptor receptor) {
 		factor /= 2.0;     // convert to 0.0..1.0
 		return std::min<float>(1.0, std::max<float>(0.0, factor));
 	}
+	return 0.0f;
 }

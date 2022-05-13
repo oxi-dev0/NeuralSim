@@ -1,5 +1,6 @@
 workspace "NeuralSim"
 	architecture "x64"
+	flags {"MultiProcessorCompile"}
 
 	configurations 
 	{
@@ -42,7 +43,7 @@ project "NeuralSim"
 	}
 
 	libdirs { "vendor/SFML/extlibs/libs-msvc-universal/x64", "vendor/SFML/lib", "vendor/nodesoup/bin/src/Release", "vendor/nodesoup/bin/src/Debug" }
-	links { "opengl32.lib", "freetype.lib", "winmm.lib", "gdi32.lib", "openal32.lib", "flac.lib", "vorbisenc.lib", "vorbisfile.lib", "vorbis.lib", "ogg.lib", "ws2_32.lib" }
+	links { "opengl32.lib", "freetype.lib", "winmm.lib", "gdi32.lib", "openal32.lib", "flac.lib", "vorbisenc.lib", "vorbisfile.lib", "vorbis.lib", "ogg.lib", "ws2_32.lib", "legacy_stdio_definitions.lib" }
 
 
 	filter "system:windows"

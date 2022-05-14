@@ -1,6 +1,6 @@
 #include "Shapes.h"
 
-namespace Shapes {
+namespace ShapeParser {
 
 	std::unordered_map<std::string, KeywordType> keywordToType = {
 		{"IF", KeywordType::CONDITION},
@@ -16,7 +16,7 @@ namespace Shapes {
 		{"GEN", &(Utils::GlobalSimData.currentGen)}
 	};
 
-	ShapeFile SurvivalConfig;
+	ShapeFile SurvivalConfig; // Stored in here as only generation.h and main.h need to reference it
 
 	std::vector<std::string> split(const std::string& s, char seperator)
 	{
@@ -166,7 +166,7 @@ namespace Shapes {
 	}
 
 	// Parse the shape file into classes that can be evaluated by the sim
-	ShapeFile ParseShapeFile(std::string file) {
+	ShapeFile FromFile(std::string file) {
 		if (!std::filesystem::exists(file)) { LOG_CRITICAL("Could not load the shape file `{0}`", file); std::terminate(); }
 		std::ifstream f(file);
 		ShapeFile newFile;

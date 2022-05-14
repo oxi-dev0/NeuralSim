@@ -1,6 +1,6 @@
 #include "Log.h"
 
-namespace Debug {
+namespace Tools {
 
 	std::shared_ptr<spdlog::logger> Log::s_Logger;
 

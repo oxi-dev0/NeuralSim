@@ -2,7 +2,7 @@
 
 #include <chrono>
 
-namespace Debug {
+namespace Tools {
 
     class Timer
     {

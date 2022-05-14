@@ -5,7 +5,7 @@
 #include "spdlog/spdlog.h"
 #include "spdlog/sinks/stdout_color_sinks.h"
 
-namespace Debug {
+namespace Tools {
 	class Log
 	{
 	public:
@@ -19,11 +19,11 @@ namespace Debug {
 }
 
 // Log macros
-#define LOG_ERROR(...)			::Debug::Log::GetLogger()->error(__VA_ARGS__)
-#define LOG_WARN(...)			::Debug::Log::GetLogger()->warn(__VA_ARGS__)
-#define LOG_INFO(...)			::Debug::Log::GetLogger()->info(__VA_ARGS__)
-#define LOG_TRACE(...)			::Debug::Log::GetLogger()->trace(__VA_ARGS__)
-#define LOG_CRITICAL(...)		::Debug::Log::GetLogger()->critical(__VA_ARGS__)
+#define LOG_ERROR(...)			::Tools::Log::GetLogger()->error(__VA_ARGS__)
+#define LOG_WARN(...)			::Tools::Log::GetLogger()->warn(__VA_ARGS__)
+#define LOG_INFO(...)			::Tools::Log::GetLogger()->info(__VA_ARGS__)
+#define LOG_TRACE(...)			::Tools::Log::GetLogger()->trace(__VA_ARGS__)
+#define LOG_CRITICAL(...)		::Tools::Log::GetLogger()->critical(__VA_ARGS__)
 
 // Strip trace and info from release build
 #ifdef RELEASE

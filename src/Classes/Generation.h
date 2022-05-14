@@ -4,9 +4,9 @@
 
 #include "Genome.h"
 #include "Output.h"
-#include "../Shapes/Shapes.h"
+#include "../ShapeParser/Shapes.h"
 
-extern Debug::Timer gtimer;
+extern Tools::Timer gtimer;
 
 extern inline void ProcessEffectorQueue(int owner);
 

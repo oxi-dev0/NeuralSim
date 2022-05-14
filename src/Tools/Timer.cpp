@@ -1,6 +1,6 @@
 #include "Timer.h"
 
-namespace Debug {
+namespace Tools {
 
 	Timer::Timer() {
 		beg_ = clock_::now();

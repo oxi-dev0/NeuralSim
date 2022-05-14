@@ -1,6 +1,6 @@
 #include "Generation.h"
 
-Debug::Timer gtimer;
+Tools::Timer gtimer;
 
 bool HasSurvived(Cell cell) {
 	// BE IN CENTER CIRCLE
@@ -9,8 +9,8 @@ bool HasSurvived(Cell cell) {
 
 	bool survived = false;
 	int c = 0;
-	for (auto circle : Shapes::SurvivalConfig.circles) {
-		if (Shapes::SurvivalConfig.evaluatedCircles[c]) {
+	for (auto circle : ShapeParser::SurvivalConfig.circles) {
+		if (ShapeParser::SurvivalConfig.evaluatedCircles[c]) {
 			// Shape passes config condition, use to determine survival
 			bool cellInside = std::sqrt(pow(std::abs(circle.pos.x - cell.pos.x), 2) + pow(std::abs(circle.pos.y - cell.pos.y), 2)) <= circle.radius;
 			survived = survived || cellInside;
@@ -18,8 +18,8 @@ bool HasSurvived(Cell cell) {
 		c++;
 	}
 	int r = 0;
-	for (auto rect : Shapes::SurvivalConfig.rects) {
-		if (Shapes::SurvivalConfig.evaluatedRects[r]) {
+	for (auto rect : ShapeParser::SurvivalConfig.rects) {
+		if (ShapeParser::SurvivalConfig.evaluatedRects[r]) {
 			// Shape passes config condition, use to determine survival
 			bool cellInside = (cell.pos.x >= rect.left) && (cell.pos.x <= rect.right) && (cell.pos.y >= rect.top) && (cell.pos.y <= rect.bottom);
 			survived = survived || cellInside;
@@ -60,7 +60,7 @@ void NewGeneration(std::vector<NeuralNet::Genome> survivorsGenomes, bool initGen
 		}
 	}
 
-	gtimer = Debug::Timer();
+	gtimer = Tools::Timer();
 	Utils::GlobalSimData.renderGen = Utils::GlobalSimData.currentGen % Utils::GlobalConfig.gensBetweenRender == 0;
 
 	if (Utils::GlobalSimData.renderGen) {
@@ -111,7 +111,7 @@ void SimulationStep(sf::RenderTexture& texture) {
 	Utils::GlobalSimData.currentStep++;
 
 	// Evaluate the survival shape conditions
-	Shapes::SurvivalConfig.EvaluateShapes();
+	ShapeParser::SurvivalConfig.EvaluateShapes();
 
 	// Threads could be slowing this down when population rises
 	std::vector<std::thread> threads;

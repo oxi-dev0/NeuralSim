@@ -16,7 +16,7 @@
 
 #include "../Tools/Log.h"
 
-namespace Shapes {
+namespace ShapeParser {
 
 	enum KeywordType {
 		CONDITION,
@@ -77,7 +77,7 @@ namespace Shapes {
 		void EvaluateShapes();
 	};
 
-	extern ShapeFile ParseShapeFile(std::string file);
+	extern ShapeFile FromFile(std::string file);
 
 	extern ShapeFile SurvivalConfig; // Stored in here as only generation.h and main.h need to reference it
 }

@@ -50,7 +50,7 @@ int main(int argc, char** argv)
 #ifdef DIST
     FreeConsole();
 #else
-    Debug::Log::Init();
+    Tools::Log::Init();
 #endif
 
     Tools::ProgramMode mode = Tools::Config::ModeFromArgv(argc, argv);
@@ -58,7 +58,7 @@ int main(int argc, char** argv)
 
     LOG_INFO("Started Engine");
 
-    Debug::Timer inittmr;
+    Tools::Timer inittmr;
     Tools::Config config = Tools::Config::InitFromArgv(argc, argv);
 
     Utils::Init();
@@ -67,8 +67,8 @@ int main(int argc, char** argv)
 
     LOG_INFO("Initialised Arguments, Utils and Globals in {0}s", inittmr.Elapsed());
 
-    Debug::Timer parseTimer;
-    Shapes::SurvivalConfig = Shapes::ParseShapeFile(Utils::GlobalConfig.survivalconfigfile);
+    Tools::Timer parseTimer;
+    ShapeParser::SurvivalConfig = ShapeParser::FromFile(Utils::GlobalConfig.survivalconfigfile);
     LOG_INFO("Parsed survival shape file in {0}s", parseTimer.Elapsed());
 
     sf::ContextSettings settings;

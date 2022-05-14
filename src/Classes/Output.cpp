@@ -3,7 +3,7 @@
 #include "Output.h"
 
 void RenderFrame(sf::RenderTexture& texture, uint16_t gen, int frame, bool(*survived)(Cell)) {
-    Debug::Timer frametmr;
+    Tools::Timer frametmr;
 
     texture.clear();
 

@@ -201,10 +201,10 @@ A simple "microorganism" that contains a Neural Map, and a location on the grid.
 
 <br>
 
-<h2> Screenshots </h2>
+<h2> Screenshots / Videos </h2>
 <h4> 10,000 Gen Simulation with it's Neural Map Visualisation </h4>
-<p float="left">
-<img src="https://user-images.githubusercontent.com/33568643/167692593-8c4ff5fb-fc6c-4a88-b18e-16d1a6c4013d.png" height="300">
-<img src="https://user-images.githubusercontent.com/33568643/167692784-acd1fe3a-903b-4052-99f3-e622ca998cca.png" height="300">
-    </p>
+
+https://user-images.githubusercontent.com/33568643/167718427-d59df614-6cee-4036-9e8e-da55312b2032.mov
+
+<img src="https://user-images.githubusercontent.com/33568643/167718510-aed3cfbe-784d-4614-9113-9179fbddad78.png" height="300">
 

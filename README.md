@@ -1,4 +1,4 @@
-<h1 align="center"> NEUROSIM </h2>
+<h1 align="center"> NEURALSIM </h2>
 <p align="center">
     <a href="#">
         <img src="https://img.shields.io/github/repo-size/oxi-dev0/NeuroSim" alt="Repo Size">
@@ -45,11 +45,11 @@
 
 1. Edit `config/config.ini` in the program directory to change the simulation parameters
 2. Setup `config/survival.shape` in the program directory to configure the [Survival Conditions](#-survival-conditions--shape-files-)
-3. Run `BioSim.exe`, optionally with the argument `-c [.INI FILE]`
+3. Run `NeuralSim.exe`, optionally with the argument `-c [.INI FILE]`
 
 <h3> Neural Map Visualisation </h3>
 
-1. Run `BioSim.exe` with the argument `-v [.NM FILE]`
+1. Run `NeuralSim.exe` with the argument `-v [.NM FILE]`
 
 <h3> Command Line Arguments </h3>
 
@@ -201,10 +201,10 @@ A simple "microorganism" that contains a Neural Map, and a location on the grid.
 
 <br>
 
-<h2> Screenshots </h2>
+<h2> Screenshots / Videos </h2>
 <h4> 10,000 Gen Simulation with it's Neural Map Visualisation </h4>
-<p float="left">
-<img src="https://user-images.githubusercontent.com/33568643/167692593-8c4ff5fb-fc6c-4a88-b18e-16d1a6c4013d.png" height="300">
-<img src="https://user-images.githubusercontent.com/33568643/167692784-acd1fe3a-903b-4052-99f3-e622ca998cca.png" height="300">
-    </p>
+
+https://user-images.githubusercontent.com/33568643/167718427-d59df614-6cee-4036-9e8e-da55312b2032.mov
+
+<img src="https://user-images.githubusercontent.com/33568643/167718510-aed3cfbe-784d-4614-9113-9179fbddad78.png" height="300">
 

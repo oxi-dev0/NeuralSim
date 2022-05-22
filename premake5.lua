@@ -9,7 +9,7 @@ workspace "NeuralSim"
 		"Dist"
 	}
 
-outputdir = "%{cfg.buildcfg}-%{cfg.system}-%{cfg.architecture}"
+outputdir = "%{cfg.buildcfg}"
 
 project "NeuralSim"
 	kind "ConsoleApp"

@@ -19,6 +19,9 @@
 <h6 align="center"> Please Note: This was inspired by <a href='https://github.com/davidrmiller/biosim4'>David R. Miller's simulator</a>, and is just a quick project i wanted to write; It does not have very optimised / clean code. </h1>
 <br>
 
+## Important
+#### When you clone this repository, you must use the argument "--recursive" to make sure it pulls all the submodules.
+
 <h3> Features </h3>
 
 - [x] Generational Simulator

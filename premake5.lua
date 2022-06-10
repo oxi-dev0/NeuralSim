@@ -39,7 +39,6 @@ project "NeuralSim"
 		"vendor/spdlog/include",
 		"vendor/mINI/include",
 		"vendor/nodesoup/include",
-		"vendor/SelbaWard/src"
 	}
 
 	libdirs { "vendor/SFML/extlibs/libs-msvc-universal/x64", "vendor/SFML/lib", "vendor/nodesoup/bin/src/Release", "vendor/nodesoup/bin/src/Debug" }

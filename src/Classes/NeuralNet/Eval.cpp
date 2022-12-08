@@ -51,6 +51,9 @@ namespace NeuralNet {
 			i++;
 		}
 
-		return (std::tanh(sum));
+		// return tanh(sum)
+		const float e = 2.718f;
+		const float ePow = pow(e, 2 * sum);
+		return (ePow-1)/(ePow+1);
 	}
 }

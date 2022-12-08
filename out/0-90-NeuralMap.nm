@@ -1,0 +1,16 @@
+r Lx
+r Ly
+r RND
+r AGE
+r OSC
+i N5 {6@24576}
+i N6 {6@-8192}{6@0}
+e Mx 
+e My {4@0}{0@8192}
+e Mfb 
+e Mlr 
+e Mrn 
+e McN {6@8192}
+e McE {2@24576}
+e McS {0@24576}
+e McW 

@@ -19,16 +19,20 @@
 <h6 align="center"> Please Note: This was inspired by <a href='https://github.com/davidrmiller/biosim4'>David R. Miller's simulator</a>, and is just a quick project i wanted to write; It does not have very optimised / clean code. </h1>
 <br>
 
-> GPU-ACCELERATED Branch: This branch is not complete at the moment.
-
 ## Important
 #### When you clone this repository, you must use the argument "--recursive" to make sure it pulls all the submodules.
+
+<h3> Branches </h3>
+
+- main > This is the normal branch, just the base program.
+- gpu-acceleration-wip > This is where i am working on GPU Acceleration using compute shaders. I do not know if this will work well to speed up simulation.
 
 <h3> Features </h3>
 
 - [x] Generational Simulator
 - [x] Neural Map Viewer / Visualiser
 - [x] Shape Parsing Language
+- [ ] GPU Acceleration
 - [ ] Simulation of custom Neural Maps
 
 <h3> Dependencies </h3>

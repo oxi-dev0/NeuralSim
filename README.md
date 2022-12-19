@@ -24,8 +24,8 @@
 
 <h3> Branches </h3>
 
-- main > This is the normal branch, just the base program.
-- gpu-acceleration-wip > This is where i am working on GPU Acceleration using compute shaders. I do not know if this will work well to speed up simulation.
+- `main` - This is the normal branch, just the base program.
+- `gpu-acceleration-wip` - This is where i am working on GPU Acceleration using compute shaders. I do not know if this will work well to speed up simulation.
 
 <h3> Features </h3>
 

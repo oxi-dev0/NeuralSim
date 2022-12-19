@@ -67,6 +67,8 @@
 | `-sc [*.shape]` | Specify the survival shape file **[DEFAULT: `config/survival.shape`]** |
 | `-k [int]` | Set the Fruchterman-Reingold constant **[DEFAULT: 400]** |
 
+> **Please Note**: The square brackets in this documentation only show there is a token or parameter to change, the program will not understand your arguments if you include square brackets when executing the program. Also, the program does not support wildcards (*), this is only in the documentation to show that a specific file of that filetype is required.
+
 <br>
 
 <h2> Source </h2>

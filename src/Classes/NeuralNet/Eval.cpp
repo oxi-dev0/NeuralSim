@@ -1,8 +1,17 @@
 #include "Types.h"
 
 namespace NeuralNet {
+	
+	// Evaluation works by starting at each output node, call a function where for each input of the node, it then determines the input value:
+	//	-	If the input node is the original node, it uses the cached value from the previous step
+	//	-	If the input node has already been calculated then it uses that calculated value
+	//	-	If the input node has already been visited in the evaluation chain, then it uses the cached value from the previous step
+	//	-	If all of these were false, then it calls the evaluation function on this input node
+	//	Then, it multiplies the value by the input weight, and adds it to the output sum. After all the inputs are added to the sum, it returns tanh(sum).
+
 	float NeuronNode::eval(const std::vector<std::shared_ptr<NeuronNode>> Nodes, std::unordered_map<int, float>* vals, std::unordered_map<int, float>* prevVals, std::vector<int> visited) {
 		float sum = 0;
+
 		// For every connection into the neuron
 		int i = 0;
 		for (int nodeIndex : in) {
